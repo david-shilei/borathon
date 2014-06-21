@@ -11,7 +11,7 @@ LOCAL_DIR="/tmp/"
 # return array of urls for tgz files
 
 def getTgzFiles(folder_path):
-    page = BeautifulSoup(urlopen(url).read())
+    page = BeautifulSoup(urlopen(folder_path).read())
     urls = []
     for link in page.findAll('a', href=re.compile(r'.*\.tgz')):
         urls.append(folder_path + '/' + link['href'])
@@ -65,9 +65,18 @@ def extractFile(path, to_directory):
         os.chdir(cwd)
 
 def extractFiles(paths, to_dir=LOCAL_DIR):
+    dirs = []
     for path in paths:
+        #print "path:%s" % path
+        directory = path[0:path.rfind('.')]
+        if os.path.exists(directory):
+            print "%s already exists, won't extract again" % directory
+            dirs.append(directory)
+            continue
         print "extracting file %s" % path
         extractFile(path, to_dir)
+        dirs.append(directory)
+    return dirs
     
 def processUrl(url):
     pattern = r"(?P<number>\d{7})(?P<subpath>(/.*)*)/\*\.tgz"
