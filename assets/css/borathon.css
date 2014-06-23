@@ -1,0 +1,6 @@
+.navbar-vmware .navbar-inner {
+    background-color: #1b1b1b;
+    background-image: linear-gradient(to bottom, #222222, #111111);
+    background-repeat: repeat-x;
+    border-color: #252525;
+}
