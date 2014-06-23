@@ -1,6 +1,6 @@
 from urllib2 import urlopen
 import re, os, tarfile, zipfile
-from bs4 import BeautifulSoup  
+from bs4 import BeautifulSoup
 
 # config
 URL_PREFIX="http://engweb.eng.vmware.com/bugs/files/0/"
@@ -15,7 +15,7 @@ def getTgzFiles(folder_path):
     urls = []
     for link in page.findAll('a', href=re.compile(r'.*\.tgz')):
         urls.append(folder_path + '/' + link['href'])
-    return urls 
+    return urls
 
 
 # url must be fully extended address ending with ".tgz"
@@ -51,12 +51,12 @@ def extractFile(path, to_directory):
         opener, mode = tarfile.open, 'r:gz'
     elif path.endswith('.tar.bz2') or path.endswith('.tbz'):
         opener, mode = tarfile.open, 'r:bz2'
-    else: 
+    else:
         raise ValueError, "Could not extract `%s` as no appropriate extractor is found" % path
 
     cwd = os.getcwd()
     os.chdir(to_directory)
-    
+
     try:
         file = opener(path, mode)
         try: file.extractall()
@@ -77,7 +77,7 @@ def extractFiles(paths, to_dir=LOCAL_DIR):
         extractFile(path, to_dir)
         dirs.append(directory)
     return dirs
-    
+
 def processUrl(url):
     pattern = r"(?P<number>\d{7})(?P<subpath>(/.*)*)/\*\.tgz"
     p = re.compile(pattern)
@@ -90,7 +90,7 @@ def processUrl(url):
 
 def validateTgzUrl(url):
     return url.startsWith("http") and url.endsWith('.tgz')
-    
+
 if __name__ == '__main__':
     url = "http://engweb.eng.vmware.com/bugs/files/0/1/2/4/9/0/9/7/"
     urls = getTgzFiles(url)
