@@ -6,14 +6,13 @@
 //     }
 //     return value;
 // }
-
 var json_result = {
 "entities": [
  	{
 		"name": "host-9:91:76e1b7f8-0-13e9",
 		"logs": [ 
 			{
-				"time": 1231231231123,
+				"start": 1231231231123,
 				"line": 234,
 				"file": "hostd.log",
  			    "content":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
@@ -23,7 +22,7 @@ var json_result = {
 		"name": "host-9:94:22480d43-0-1ae8",
 		"logs": [
 			{
-				"time": 1231231231231,
+				"start": 1231231231231,
 				"line": 235,
 				"file": "hostd.log",
 				"content": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
@@ -74,6 +73,35 @@ $(document).ready(function(){
 function displayLog(log) {
 	var contentContainer = $('#entityContent');
 	contentContainer.empty();
-    var logContent = $('<div class="span4" style="display: none;"><h2>' + new Date(log.time) +'</h2><p>' +  log.content + '</p></div><!--/span-->');
+    var logContent = $('<div class="span4" style="display: none;"><h2>' + new Date(log.start) +'</h2><p>' +  log.content + '</p></div><!--/span-->');
 	logContent.appendTo(contentContainer).show('slow');
 }
+
+
+$(document).ready(function () { 
+    // specify options
+    var options = {
+        "width":  "100%",
+        //"scale": links.Timeline.StepDate.SCALE.MILLISECOND,
+        //"step": 1,
+        "axisOnTop": true,
+        "cluster": true,
+        "style": "dot" // optional
+    };
+	
+	logs = json_result["entities"][0].logs;
+	// $.each(json_result["entities"], function(idx, entity){
+	// 	$.each(entity.logs, function(idx, log){
+	// 		logs << log;
+	// 	});
+	// });
+
+        // Instantiate our timeline object.
+        // $.getJSON("hostd.log.json", function(data) {
+            var timeline = new links.Timeline(document.getElementById('mytimeline'));
+            // Draw our timeline with the created data and options
+            //alert("mlgb........");
+            timeline.draw(logs, options);
+        // });
+
+    });
