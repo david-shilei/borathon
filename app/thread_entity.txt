@@ -1,3 +1,3 @@
-hostd.log:\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ \[(?P<thread>.*?) .* opID=(?P<opid>.*?) .*.*
+hostd.log:\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ \[(?P<thread>.*?) .* opID=(?P<opid>.*?) .*
 #hostd.log:\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ .*
 #hostd.log:\d\d\d\d.*

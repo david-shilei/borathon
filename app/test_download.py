@@ -1,18 +1,10 @@
 import os, sys, inspect
-# realpath() with make your script run, even if you symlink it :)
-cmd_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
 
-# use this if you want to include modules from a subforder
-cmd_subfolder = os.path.realpath(os.path.abspath(os.path.join(os.path.split(inspect.getfile( inspect.currentframe() ))[0],"../lib")))
-if cmd_subfolder not in sys.path:
-    sys.path.insert(0, cmd_subfolder)
-
-import util
-from util import processUrl, downloadFile
+import download
+from download import processUrl, downloadFile
 import unittest
 from pprint import pprint
+from mylogger import logger
 
 class TestUtil(unittest.TestCase):
 
@@ -37,7 +29,7 @@ class TestUtil(unittest.TestCase):
         # make sure all the tgz files for a url is downloaded correctly
         url = "http://engweb.eng.vmware.com/bugs/files/0/1/2/4/9/0/9/7/esx-w2-erqa230-2014-05-09--23.23.tgz"
         local_path = downloadFile(url)
-        print local_path
+        logger.debug(local_path)
         self.assertEqual(os.path.getsize(local_path), 162180210)
 
 

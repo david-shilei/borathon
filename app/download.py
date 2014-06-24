@@ -1,6 +1,7 @@
 from urllib2 import urlopen
 import re, os, tarfile, zipfile
 from bs4 import BeautifulSoup
+from mylogger import logger
 
 # config
 URL_PREFIX="http://engweb.eng.vmware.com/bugs/files/0/"
@@ -22,10 +23,10 @@ def getTgzFiles(folder_path):
 def downloadFile(url):
     req = urlopen(url)
     filename = os.path.basename(url)
-    print filename
+    logger.debug("Downloading " + filename)
     local_path = LOCAL_DIR + filename
     if(os.path.exists(local_path)):
-        print("%s already exists, won't download again" % local_path)
+        logger.debug("%s already exists, won't download again" % local_path)
         return local_path
 
     CHUNK = 16*1024
@@ -67,13 +68,12 @@ def extractFile(path, to_directory):
 def extractFiles(paths, to_dir=LOCAL_DIR):
     dirs = []
     for path in paths:
-        #print "path:%s" % path
         directory = path[0:path.rfind('.')]
         if os.path.exists(directory):
-            print "%s already exists, won't extract again" % directory
+            logger.debug("%s already exists, won't extract again" % directory)
             dirs.append(directory)
             continue
-        print "extracting file %s" % path
+        logger.debug("extracting file %s" % path)
         extractFile(path, to_dir)
         dirs.append(directory)
     return dirs
