@@ -7,51 +7,56 @@
 //     return value;
 // }
 var json_result = {
-"entities": [
- 	{
-		"name": "host-9:91:76e1b7f8-0-13e9",
-		"logs": [ 
+		"host-9:91:76e1b7f8-0-13e9": [ 
 			{
 				"start": 1231231231123,
 				"line": 234,
 				"file": "hostd.log",
  			    "content":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
-			}]
-	},
-	{
-		"name": "host-9:94:22480d43-0-1ae8",
-		"logs": [
+			}],
+		"host-9:94:22480d43-0-1ae8": [
 			{
 				"start": 1231231231231,
 				"line": 235,
 				"file": "hostd.log",
 				"content": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
 			}]
-	}
-]}
+}
 
 $(document).ready(function(){	
-	var data = [{"content":"RecordOp ASSIGN: guest, 53. Sent notification immediately.","loglevel":"verbose","start":1399706542422},{"content":"RecordOp ASSIGN: summary.guest, 17. Sent notification immediately.","loglevel":"verbose","start":1399706546913},{"content":"Done Dispatching Vigor callback","loglevel":"verbose","start":1399706556078}]
-	
 	// $.get( "http://ec2-54-254-246-134.ap-southeast-1.compute.amazonaws.com/borathon/hostd.log.json", function( data, status) {
 	//
 	// });
 	//
-	data = data.slice(0, 5)
-  	$.each(json_result["entities"], function(idx, entity){
+  	buildEntitiesList(json_result);
+});
+
+function buildEntitiesList(entities) {
+	var logsToTimeline = []
+  	for(var entityName in entities) {
+		var logs = entities[entityName];
+		// TODO
+		logsToTimeline = logs;
 		var link = $("<a />", {
 		    href: "#",
 		    "class": "entity-link", // you need to quote "class" since it's a reserved keyword
-		    text: entity.name,
-			title: entity.name,
+		    text: entityName,
+			title: entityName,
 			style: "float:left"
 		});
-		link.data("name", entity.name);
-		link.data("logs", entity.logs);
+		link.data("name", entityName);
+		link.data("logs", logs);
+		
+	  	link.click(function(){
+			var entityName = $(this).data("name");
+			filterEntity(entityName);
+			var log = $(this).data("logs")[0];
+	  		displayLog(log);
+	  	});
 		
 		var badge = $("<span />", {
 			"class": "badge",
-			text: entity.logs.length,
+			text: logs.length,
 			style: "float:right"
 		});
 		
@@ -62,13 +67,10 @@ $(document).ready(function(){
 		newItem.append(badge);
 		
 		newItem.appendTo($("#entityList")).show('slow');
-  	});
-	  
-  	$(".entity-link").click(function(){
-		var log = $(this).data("logs")[0]
-  		displayLog(log);
-  	});
-});
+  	}
+	alert(logsToTimeline.length);
+	fillTimeline(logsToTimeline);
+}
 
 function displayLog(log) {
 	var contentContainer = $('#entityContent');
@@ -77,8 +79,11 @@ function displayLog(log) {
 	logContent.appendTo(contentContainer).show('slow');
 }
 
+function filterEntity(entityName) {
+	var logs = json_result[entityName];
+}
 
-$(document).ready(function () { 
+function fillTimeline(logs) {
     // specify options
     var options = {
         "width":  "100%",
@@ -89,7 +94,6 @@ $(document).ready(function () {
         "style": "dot" // optional
     };
 	
-	logs = json_result["entities"][0].logs;
 	// $.each(json_result["entities"], function(idx, entity){
 	// 	$.each(entity.logs, function(idx, log){
 	// 		logs << log;
@@ -103,5 +107,5 @@ $(document).ready(function () {
             //alert("mlgb........");
             timeline.draw(logs, options);
         // });
-
-    });
+	
+}
