@@ -53,7 +53,17 @@ def processLog(dirs, log_types, entity_patterns, log_patterns):
     for log_file in _log_files:
         for entity in entities:
             extractLogLines(log_file, entity, entity_log_mapping)
-    return entity_log_mapping
+
+    result = []
+    for entity in entity_log_mapping:
+        single_result = { 'name' : entity, 'logs' : []}
+        for log in entity_log_mapping[entity]:
+            single_result['logs'].append(log)
+        result.append(single_result)
+
+    return { 'entities' : result }
+
+
 
 def convertTimestampToEpoch(timestamp):
     # standard time stamp 2014-05-09T22:27:22.670Z
@@ -69,12 +79,13 @@ def extractLogLines(file, entity, entity_log_mapping):
         for line in f:
             # XXX: check if time stamp starts with 2014, should be improved
             if line.find(entity) != -1 and line.startswith('2014'):
-                record = LogRecord()
-                record.timestamp = line[0 : TIMESTAMP_LENGTH]
-                record.log = line
-                record.source = file
-                record.line = lineNumber
-                record.epoch = convertTimestampToEpoch(record.timestamp)
+                timestamp =  line[0 : TIMESTAMP_LENGTH]
+                record = {
+                    'log' : line,
+                    'source' : file,
+                    'line' : lineNumber,
+                    'epoch' : convertTimestampToEpoch(timestamp)
+                }
                 if entity_log_mapping.get(entity) is None:
                     entity_log_mapping[entity] = [record]
                 else:

@@ -28,7 +28,7 @@ class TestUtil(unittest.TestCase):
     def test_downloadUrl(self):
         # make sure all the tgz files for a url is downloaded correctly
         url = "http://engweb.eng.vmware.com/bugs/files/0/1/2/4/9/0/9/7/esx-w2-erqa230-2014-05-09--23.23.tgz"
-        local_path = downloadFile(url)
+        local_path = downloadFile("/tmp/", url)
         logger.debug(local_path)
         self.assertEqual(os.path.getsize(local_path), 162180210)
 

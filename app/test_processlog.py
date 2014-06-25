@@ -38,7 +38,8 @@ class TestProcessLog(unittest.TestCase):
                                    'Failed to load virtual machine: vim.fault.FileNotFound']}
         log_records = processLog(dirs, supported_logs, entity_patterns, patterns)
         entity = "io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx"
-        self.assertEqual(len(log_records[entity]), 33)
+        #pprint(log_records)
+        self.assertEqual(len(log_records['entities']), 4)
 
     def test_convertTimestampToEpoch(self):
         timestamp = "2014-05-09T22:27:22.670Z"

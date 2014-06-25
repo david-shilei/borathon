@@ -1,7 +1,7 @@
 import os, sys, inspect
 
 from flask import Flask, render_template, url_for, request, jsonify, session, abort
-from download import downloadFiles, processUrl, extractFiles
+from download import downloadFiles, processUrl, extractFiles, downloadSupportBundles
 from pprint import pprint
 from jsonpickle import encode
 from processlog import processLog, getNLines
@@ -23,21 +23,24 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route('/')
 def home():
-  return render_template('index.html')
+  return render_template('pages/home.html')
 
-@app.route('/submit', methods=['GET'])
+@app.route('/submit', methods=['GET','POST'])
 def submit():
+    logger.debug("hello")
     url=request.args.get('url', '')
+    #url = "1249097/*.tgz"
 
     # download and extract support bundles
-    urls = processUrl(url.strip())
-    local_paths = downloadFiles(urls)
+    local_paths = downloadSupportBundles(url)
     extracted_dirs = extractFiles(local_paths)
 
     session['extracted_dirs'] = extracted_dirs
     mapping = processLog(extracted_dirs, log_types, entity_patterns, log_patterns)
-    #pprint(mapping)
+    pprint(mapping)
     return encode(mapping)
+    #mapping = { 'user' : [ {'name' : 'hi' , 'age' : 24 }] }
+    #return render_template('pages/timeline.html', hello = mapping) 
 
 @app.route('/testsession')
 def testsession():
@@ -67,15 +70,6 @@ def loadPatterns():
     global log_patterns
     global entity_patterns
     log_patterns = { log_type : [] for log_type in log_types }
-
-#    with open(ENTITY_PATTERN_FILE) as f:
-#        content = f.readlines()
-#    f.close()
-#    for line in content:
-#        line.strip()
-#        prefix = log_type + ":"
-#        if line.startswith(prefix):
-#            entity_patterns.append(line.lstrip(prefix))
 
     with open(LOG_PATTERN_FILE) as f:
         content = f.readlines()
