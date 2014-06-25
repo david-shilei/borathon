@@ -1,4 +1,5 @@
 import os, re, time
+import subprocess
 from pprint import pprint, pformat
 from mylogger import logger
 
@@ -27,7 +28,7 @@ def findEntity(file, _entity_patterns, log_patterns):
 def processLog(dirs, log_types, entity_patterns, log_patterns):
 
     # entity to logs mapping, return as result of this fuction
-    entity_log_mapping = {} 
+    entity_log_mapping = {}
     # all entities
     entities = set()
 
@@ -95,4 +96,10 @@ def dumpLogRecords(records):
     for entity in records.keys():
         for record in records[entity]:
             logger.debug(("%s, %s,%s") % (entity, record.timestamp, record.log))
+
+def getNLines(fileName, lineNum, n):
+    cmd = r"""grep -n '' %s |head -%d |tail -%d""" % (fileName, lineNum + n, lineNum - n)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    output, err = p.communicate()
+    return output
 
