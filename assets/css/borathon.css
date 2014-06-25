@@ -4,3 +4,7 @@
     background-repeat: repeat-x;
     border-color: #252525;
 }
+
+.entity-link.selected {
+	background-color: #1b1b1b;
+}

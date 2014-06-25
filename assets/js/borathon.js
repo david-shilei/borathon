@@ -23,35 +23,36 @@ var json_result = {
 			}]
 }
 
+var selected_entities = []
+
 $(document).ready(function(){	
 	// $.get( "http://ec2-54-254-246-134.ap-southeast-1.compute.amazonaws.com/borathon/hostd.log.json", function( data, status) {
 	//
 	// });
 	//
-  	buildEntitiesList(json_result);
+  	buildForEntities(json_result);
 });
 
-function buildEntitiesList(entities) {
-	var logsToTimeline = []
+function buildForEntities(entities) {
+	$("#entityList").empty();
+	
+	var logsToTimeline = [];
   	for(var entityName in entities) {
 		var logs = entities[entityName];
-		// TODO
-		logsToTimeline = logs;
+		logsToTimeline.push(logs);
 		var link = $("<a />", {
 		    href: "#",
 		    "class": "entity-link", // you need to quote "class" since it's a reserved keyword
 		    text: entityName,
 			title: entityName,
-			style: "float:left"
+			style: "clear:both;"
 		});
 		link.data("name", entityName);
 		link.data("logs", logs);
 		
 	  	link.click(function(){
-			var entityName = $(this).data("name");
-			filterEntity(entityName);
-			var log = $(this).data("logs")[0];
-	  		displayLog(log);
+			logs = filterLogs($(this));
+			fillTimeline(logs);
 	  	});
 		
 		var badge = $("<span />", {
@@ -59,16 +60,16 @@ function buildEntitiesList(entities) {
 			text: logs.length,
 			style: "float:right"
 		});
-		
+
 		var newItem = $("<li />", {
-		    style: "display: none; clear: both;"
+		    style: "display: none;"
 		});
+		link.append(badge);
 		newItem.append(link);
-		newItem.append(badge);
 		
 		newItem.appendTo($("#entityList")).show('slow');
   	}
-	alert(logsToTimeline.length);
+
 	fillTimeline(logsToTimeline);
 }
 
@@ -79,11 +80,30 @@ function displayLog(log) {
 	logContent.appendTo(contentContainer).show('slow');
 }
 
-function filterEntity(entityName) {
-	var logs = json_result[entityName];
+function filterLogs(entityLink) {
+	var entityName = entityLink.data("name");
+	var selected = entityLink.hasClass('selected');
+
+	if(selected) {
+		entityLink.removeClass('selected');
+		while (selected_entities.indexOf(entityName) !== -1) {
+		  selected_entities.splice(selected_entities.indexOf(entityName), 1);
+		}
+	} else {
+		entityLink.addClass('selected');
+		selected_entities.push(entityName);
+	}
+
+	var logs = [];
+	for(var i in selected_entities) {
+		var e = selected_entities[i];
+		logs.push(json_result[e]);
+	}
+	
+	return logs;
 }
 
-function fillTimeline(logs) {
+function fillTimeline(logs, div) {
     // specify options
     var options = {
         "width":  "100%",
@@ -99,13 +119,13 @@ function fillTimeline(logs) {
 	// 		logs << log;
 	// 	});
 	// });
-
         // Instantiate our timeline object.
         // $.getJSON("hostd.log.json", function(data) {
-            var timeline = new links.Timeline(document.getElementById('mytimeline'));
+    var timeline = new links.Timeline(document.getElementById('mytimeline'));
             // Draw our timeline with the created data and options
             //alert("mlgb........");
-            timeline.draw(logs, options);
+			
+    timeline.draw(logs[0], options);
         // });
 	
 }
