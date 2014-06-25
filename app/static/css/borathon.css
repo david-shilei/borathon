@@ -5,6 +5,8 @@
     border-color: #252525;
 }
 
-.entity-link.selected {
+.entity-link.selected, .entity-link.selected:focus, .entity-link.selected:hover {
 	background-color: #1b1b1b;
+	color: #FFFFFF;
+	text-shadow: "0 1px 0 rgba(255, 255, 255, 0.5)";
 }
