@@ -7,3 +7,6 @@ Dependencies:
 
 BeautifulSoap: http://www.crummy.com/software/BeautifulSoup/
 jsonpickle: http://http://jsonpickle.github.io/
+
+sudo pip install jsonpickle
+sudo pip install beautifulsoup4
