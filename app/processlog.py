@@ -100,7 +100,7 @@ def dumpLogRecords(records):
 def getNLines(fileName, lineNum, n):
     start = lineNum + n
     length = 2 * n + 1
-    cmd = r"""grep -n '' %s |head -%d |tail -%d""" % (fileName, start, length)
+    cmd = r"""cat -n %s |head -%d |tail -%d""" % (fileName, start, length)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     output, err = p.communicate()
     return output
