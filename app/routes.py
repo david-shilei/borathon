@@ -1,10 +1,10 @@
 import os, sys, inspect
 
-from flask import Flask, render_template, url_for, request, jsonify, session
+from flask import Flask, render_template, url_for, request, jsonify, session, abort
 from download import downloadFiles, processUrl, extractFiles
 from pprint import pprint
 from jsonpickle import encode
-from processlog import processLog
+from processlog import processLog, getNLines
 from mylogger import logger
 
 app = Flask(__name__)
@@ -45,10 +45,28 @@ def testsession():
     return "You have uploaded these support bundles <br>" +  \
            '<br>'.join(session['extracted_dirs'])
 
+@app.route('/raw')
+def raw():
+    _check_required_fields(request, 'file', 'linenum')
+    file_name = request.args.get('file')
+    line_num = int(request.args.get('linenum'))
+    default_n = 5
+    n = int(request.args.get('n')) if request.args.get('n') is not None else default_n
+    return getNLines(file_name, line_num, n)
+
+def _check_required_fields(request, *fields):
+    if request.args is None:
+       logger.info('No args fields.')
+       abort(400)
+    for field in fields:
+       if request.args.get(field) is None:
+          logger.info('Missing required args.')
+          abort(400)
+
 def loadPatterns():
     global log_patterns
     global entity_patterns
-    log_patterns = { log_type : [] for log_type in log_types }   
+    log_patterns = { log_type : [] for log_type in log_types }
 
 #    with open(ENTITY_PATTERN_FILE) as f:
 #        content = f.readlines()

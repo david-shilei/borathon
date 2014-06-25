@@ -98,7 +98,9 @@ def dumpLogRecords(records):
             logger.debug(("%s, %s,%s") % (entity, record.timestamp, record.log))
 
 def getNLines(fileName, lineNum, n):
-    cmd = r"""grep -n '' %s |head -%d |tail -%d""" % (fileName, lineNum + n, 2 * n + 1)
+    start = lineNum + n
+    length = 2 * n + 1
+    cmd = r"""grep -n '' %s |head -%d |tail -%d""" % (fileName, start, length)
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     output, err = p.communicate()
     return output
