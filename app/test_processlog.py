@@ -36,7 +36,7 @@ class TestProcessLog(unittest.TestCase):
         patterns = {'hostd.log' : ['\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d\.\d\d\dZ ' \
                                    '\[(?P<thread>.*?) .*/(?P<entity>.*\.vmx).*' \
                                    'Failed to load virtual machine: vim.fault.FileNotFound']}
-        log_records = processLog(dirs, supported_logs, entity_patterns, patterns) 
+        log_records = processLog(dirs, supported_logs, entity_patterns, patterns)
         entity = "io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx"
         self.assertEqual(len(log_records[entity]), 33)
 
@@ -45,6 +45,18 @@ class TestProcessLog(unittest.TestCase):
         ret = convertTimestampToEpoch(timestamp)
         self.assertEqual(ret, 1399645642670)
 
+    def test_getNLines(self):
+       file=u'./test_processlog.py'
+       linenum = 15
+       n = 5
+       lines = getNLines(file, linenum, n).rstrip().split('\n')
+       print lines
+       self.assertEqual(11, len(lines))
+       linenum = 10
+       n = 2
+       lines = getNLines(file, linenum, n).rstrip().split('\n')
+       print lines
+       self.assertEqual(5, len(lines))
 if __name__ == '__main__':
     unittest.main()
 
