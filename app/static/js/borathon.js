@@ -103,29 +103,4 @@ function filterLogs(entityLink) {
 	return logs;
 }
 
-function fillTimeline(logs, div) {
-    // specify options
-    var options = {
-        "width":  "100%",
-        //"scale": links.Timeline.StepDate.SCALE.MILLISECOND,
-        //"step": 1,
-        "axisOnTop": true,
-        "cluster": true,
-        "style": "dot" // optional
-    };
-	
-	// $.each(json_result["entities"], function(idx, entity){
-	// 	$.each(entity.logs, function(idx, log){
-	// 		logs << log;
-	// 	});
-	// });
-        // Instantiate our timeline object.
-        // $.getJSON("hostd.log.json", function(data) {
-    var timeline = new links.Timeline(document.getElementById('mytimeline'));
-            // Draw our timeline with the created data and options
-            //alert("mlgb........");
-			
-    timeline.draw(logs[0], options);
-        // });
-	
-}
+
