@@ -31,33 +31,56 @@ def getBugzillaRecords(entity):
           bugs[bug_id.strip()] = summary.strip()
     return bugs
 
-def processLog(dirs, conf):
-
+def processLog(dirs, conf, offset=0, limit=1000):
     # entity to logs mapping, return as result of this fuction
     entity_log_mapping = {}
 
     # all entities
     global entities
     entities = dict()
+    entities['host'] = {}
+    entities['vm'] = {}
+    entities['other'] = {}
 
     getEntityPattern(dirs, conf, entities)
 
     # third step: extract all logs related with the entities'
-    for entity in entities.keys():
-        entries = SearchLog(entity, os.path.dirname(dirs[0]))
-        if entity in entity_log_mapping:
-            entity_log_mapping.extends(entries)
+    all_entries = []
+    for entityType in entities.keys():
+        for entity in entities[entityType]:
+            entries = SearchLog(entity, os.path.dirname(dirs[0]))
+            all_entries.extend(entries)
+
+    sorted(all_entries, key=lambda x: x['epoch'])
+    all_entries = all_entries[offset:offset + limit]
+    for entry in all_entries:
+        entity = entry['entity']
+        root = None
+        if '.vmx' in entity:
+            root = entities['vm']
+        elif entity.startswith('host-'):
+            root = entities['host']
         else:
-            entity_log_mapping[entity] = entries
+            root = entities['other']
+        if entity not in root or isinstance(root[entity], set):
+            root[entity] = []
+        entry.pop('entity', None)
+        root[entity].append(entry)
 
-    result = []
-    for entity in entity_log_mapping:
-        single_result = { 'name' : entity, 'logs' : []}
-        for log in entity_log_mapping[entity]:
-            single_result['logs'].append(log)
-        result.append(single_result)
+    #result = []
+    #for entity in entity_log_mapping:
+    #    single_result = { 'name' : entity, 'logs' : []}
+    #    for log in entity_log_mapping[entity]:
+    #        single_result['logs'].append(log)
+    #    result.append(single_result)
 
-    return { 'entities' : result }
+    for key in entities.keys():
+        for entity in entities[key].keys():
+            if entities[key][entity] == []:
+                entities[key].pop(entity, None)
+                continue
+            entities[key][entity] = sorted(entities[key][entity], key=lambda x: x['epoch'])
+    return entities
 
 
 
@@ -97,14 +120,22 @@ def extractEntities(file, conf, entities):
     with open(file) as f:
         for line in f:
             for c in conf['details']:
-               p = re.compile(c['full'])
-               m = p.match(line.strip())
-               if m:
-                   # we allow multiple entities in one line
-                   for entity in m.groups():
-                      if entity not in entities:
-                         entities[entity] = set()
-                      entities[entity].add(c['name'])
+                p = re.compile(c['full'])
+                m = p.match(line.strip())
+                if m:
+                    # we allow multiple entities in one line
+                    for entity in m.groups():
+                        root = None
+                        if '.vmx' in entity:
+                            root = entities['vm']
+                        elif entity.startswith('host-'):
+                            root = entities['host']
+                        else:
+                            root = entities['other']
+
+                        if entity not in root:
+                            root[entity] = []
+                        #root[entity].add(c['name'])
 
 def dumpLogRecords(records):
     for entity in records.keys():
@@ -164,10 +195,8 @@ def SearchLog(keyword, path):
                     'log' : '...%s...' % logLine[left:right],
                     'source' : m.group(1).replace('%s/' % path, ''),
                     'line' : int(m.group(2)),
-                    'epoch' : convertTimestampToEpoch(timestamp)
+                    'epoch' : convertTimestampToEpoch(timestamp),
+                    'entity': keyword
                 }
                 result.append(record)
     return sorted(result, key=lambda x: x['epoch'])
-
-if __name__ == '__main__':
-    print SearchLog('HB-host-10@10888-3e0d543a-cc-fb6f', '/Users/hackerzhou/Downloads/esx-w2-erqa230-2014-05-09--23.23')

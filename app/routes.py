@@ -32,6 +32,8 @@ def sample():
 def submit():
     url=request.args.get('url', '')
     #url = "1249097/*.tgz"
+    offset = request.args.get('offset', '0')
+    limit = request.args.get('limit', '1000')
 
     # download and extract support bundles
     local_paths = downloadSupportBundles(url)
@@ -39,7 +41,7 @@ def submit():
 
     session['extracted_dirs'] = extracted_dirs
 
-    mapping = processLog(extracted_dirs, conf['patterns'])
+    mapping = processLog(extracted_dirs, conf['patterns'], int(offset), int(limit))
     #pprint(mapping)
 
     return encode(mapping)
