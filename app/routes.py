@@ -12,9 +12,6 @@ from mylogger import logger
 app = Flask(__name__)
 
 PATTERN_CONFIG = "patterns.conf"
-LOG_PATTERN_FILE = "log_patterns.txt"
-ENTITY_PATTERN_FILE = "entity_patterns.txt"
-THREAD_ENTITY_FILE = "thread_entity.txt"
 # note: hash, key is entity, value is an array of logs for that entity
 conf = {}
 
