@@ -18,7 +18,7 @@ def getEntityPattern(dirs, conf, entities):
             extractEntities(log_file, c, entities)
 
 def getBugzillaRecords(entity):
-    bugs = {}
+    bugs = []
     patterns = entities.get(entity)
     for p in patterns:
        #-w bug_id,short_desc | grep '|.*\d.*'
@@ -28,7 +28,10 @@ def getBugzillaRecords(entity):
        lines = output.strip().split('\n')
        for l in lines:
           bug_id, summary = l.strip('|').split('|')
-          bugs[bug_id.strip()] = summary.strip()
+          pair = {}
+          pair['id'] = bug_id.strip()
+          pair['value'] = summary.strip()
+          bugs.append(pair)
     return bugs
 
 def processLog(dirs, conf, offset=0, limit=1000):

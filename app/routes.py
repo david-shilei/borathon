@@ -1,7 +1,8 @@
 import os, sys, inspect
 
 import processlog
-from flask import Flask, render_template, url_for, request, jsonify, session, abort
+import json
+from flask import Flask, render_template, url_for, request, session, abort, Response
 from download import downloadFiles, processUrl, extractFiles, downloadSupportBundles
 from pprint import pprint
 from jsonpickle import encode
@@ -67,7 +68,8 @@ def raw():
 
 @app.route('/bugzilla/<entity>')
 def get_bugzilla_records(entity):
-   return jsonify(processlog.getBugzillaRecords(entity))
+   rv = processlog.getBugzillaRecords(entity)
+   return Response(json.dumps(rv),  mimetype='application/json')
 
 def _check_required_fields(request, *fields):
     if request.args is None:
