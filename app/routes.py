@@ -36,10 +36,8 @@ def submit():
 
     session['extracted_dirs'] = extracted_dirs
     mapping = processLog(extracted_dirs, log_types, entity_patterns, log_patterns)
-    pprint(mapping)
+    #pprint(mapping)
     return encode(mapping)
-    #mapping = { 'user' : [ {'name' : 'hi' , 'age' : 24 }] }
-    #return render_template('pages/timeline.html', hello = mapping) 
 
 @app.route('/testsession')
 def testsession():
@@ -77,7 +75,6 @@ def loadPatterns():
         for log_type in log_types:
             prefix = log_type + ":"
             if line.startswith(prefix):
-                print line
                 log_patterns[log_type].append(line.strip().lstrip(prefix))
                 break
 
