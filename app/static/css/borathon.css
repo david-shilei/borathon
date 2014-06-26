@@ -24,6 +24,11 @@
 	float:right;
 }
 
+.timeTravel.disabled, .timeTravel.disabled:hover {
+	color: #cccccc;
+	point: "none";
+}
+
 .navbar-vmware .navbar-inner {
     background-color: #1b1b1b;
     background-image: linear-gradient(to bottom, #222222, #111111);

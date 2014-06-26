@@ -13,10 +13,14 @@ $(".timeTravel").click(function(){
 		offset += EACH_LIMIT;
 	} else {
 		offset -= EACH_LIMIT;
-		if(offset < 0) {
-			offset = 0;
-		}
 	}
+	if(offset <= 0) {
+		offset = 0;
+		$(".timeTravel.prev").addClass("disabled");
+	} else {
+		$(".timeTravel.prev").removeClass("disabled");
+	}
+	
     getAndRenderSupportBundle(sb_url, offset);
 });
 
