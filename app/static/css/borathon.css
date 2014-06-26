@@ -31,6 +31,7 @@ span.legend {
 div.info, span.legend.info {
     background-color: greenyellow;
     border-color: green;
+    font-size: 15px;
 }
 
 /* create a custom sized dot at the bottom of the red item */
@@ -40,6 +41,7 @@ div.error, span.legend.error {
     color: white;
     font-family: monospace;
     box-shadow: 0 0 10px gray;
+    font-size: 15px;
 }
 div.timeline-event-dot.error {
     border-radius: 10px;
@@ -51,13 +53,14 @@ div.timeline-event-line.error {
 div.timeline-event-box.error {
     border-radius: 0;
     border-width: 2px;
-    font-size: 24pt;
+    font-size: 15pt;
     font-weight: bold;
 }
 
 div.warning, span.legend.warning {
     background-color: gold;
     border-color: orange;
+    font-size: 15px;
 }
 div.timeline-event-selected.warning {
     /* custom colors for selected orange items */
@@ -69,6 +72,7 @@ div.fatal, span.legend.fatal {
     background-color: magenta;
     border-color: purple;
     color: white;
+    font-size: 15px;
 }
 
 /* our custom classes overrule the styles for selected events,
