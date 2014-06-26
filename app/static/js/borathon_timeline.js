@@ -114,7 +114,6 @@ function onLogSelected(item) {
      var logLineArrays = parseReturnedRawLogLines(result); 
      onRawLogLinesFetched(logLineArrays, line);
   });
-  //2. Get bugzilla pr
 }
 
 /**
@@ -132,8 +131,4 @@ function onRawLogLinesFetched(loglines_array, n) {
     }
     rltHtml += "</p>";
     alert(rltHtml);
-}
-
-function onPRsLoaded(pr_array) {
-    //here add pr number render logic for display pr links to bugzilla
 }
