@@ -61,6 +61,7 @@ function getAndRenderSupportBundle(url) {
 		url: url,
 	    format: "json"
 	}).done(function( data ) {
+		$("#loading").hide();
 		renderEntityList(data);
 	});
 }
