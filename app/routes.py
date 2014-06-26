@@ -42,8 +42,10 @@ def submit():
     #pprint(mapping)
 
     return encode(mapping)
-    #mapping = { 'user' : [ {'name' : 'hi' , 'age' : 24 }] }
-    #return render_template('pages/timeline.html', hello = mapping)
+
+@app.route('/patterns')
+def patterns():
+    return encode(conf['patterns'])
 
 @app.route('/testsession')
 def testsession():
