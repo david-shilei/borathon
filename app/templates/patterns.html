@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block body %}
+    <div class="container">
+      <h1>Patterns</h1>
+		{% for p in patterns %}
+				  {% for detail in  p['details'] %}
+							 Log file: {{ p.log_type }} <br>
+							 Pattern: {{ detail.name}} <br>
+							 Regex: {{ detail.full }} <br>
+					{% endfor %}
+		{% endfor %}
+    </div> <!-- /container -->
+{% endblock %}
