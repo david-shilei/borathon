@@ -141,5 +141,5 @@ function onRawLogLinesFetched(loglines_array, n) {
 		$("#rawLogs").append(log_line);
     }
 	
-	$('#myModal').modal(options)
+	$('#rawLogsModal').modal('show');
 }

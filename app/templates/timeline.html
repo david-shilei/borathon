@@ -83,7 +83,7 @@
   				<div id="logsTimeline"></div>
             </div>
 			
-			    <div class="modal hide fade">
+			    <div id="rawLogsModal" class="modal hide fade">
 			    	<div class="modal-header">
 			    		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 			    		<h3>Raw Logs</h3>
@@ -137,8 +137,7 @@
     <script src="../static/js/bootstrap.js"></script>
 	
 	 <script type="text/javascript">
-			sb_url = "{{ data['url'] }}";
-		   alert(sb_url);
+		sb_url = "{{ data['url'] }}";
 	 </script>
 	<script src="../static/js/timeline.js"></script>
 	<script src="../static/js/borathon_timeline.js"></script>
