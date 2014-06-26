@@ -30,12 +30,6 @@ def about():
 def contact():
     return render_template('contact.html')
 
-@app.route('/pattern')
-def pattern():
-    path = os.path.join(app.root_path, 'patterns.conf')
-    #print path
-    return send_from_directory(os.path.dirname(path), os.path.basename(path))
-
 @app.route('/timeline1')
 def timeline():
 #    mydata = {
@@ -105,7 +99,7 @@ def result():
 
 @app.route('/patterns')
 def patterns():
-    return encode(conf['patterns'])
+    return render_template('patterns.html', patterns = conf['patterns'])
 
 @app.route('/testsession')
 def testsession():
