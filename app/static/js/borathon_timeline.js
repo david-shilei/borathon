@@ -114,7 +114,7 @@ function onLogSelected(item) {
      data: {linenum: line, file: filePath}
  }).done(function(result){
     var logLineArrays = parseReturnedRawLogLines(result);
-    onRawLogLinesFetched(logLineArrays, line);
+    onRawLogLinesFetched(filePath, logLineArrays, line);
  });
  
   
@@ -130,7 +130,7 @@ function onLogSelected(item) {
  * it contains 2*n + 1 max lines.
  * n is current line number, which might need to be highlighted in html.
  */
-function onRawLogLinesFetched(loglines_array, n) {
+function onRawLogLinesFetched(filePath, loglines_array, n) {
 	$("#rawLogs").empty();
     for(var i = 0; i < loglines_array.length; i++) {
 		var log_line = $("<li/>", {
@@ -140,6 +140,8 @@ function onRawLogLinesFetched(loglines_array, n) {
 		
 		$("#rawLogs").append(log_line);
     }
-	
+
+	$("#rawLogsFile").href = "/file/" + filePath;
+	$("#rawLogsFile").text = filePath;
 	$('#rawLogsModal').modal('show');
 }
