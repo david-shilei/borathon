@@ -9,14 +9,12 @@ from mylogger import logger
 
 app = Flask(__name__)
 
+PATTERN_CONFIG = "patterns.conf"
 LOG_PATTERN_FILE = "log_patterns.txt"
 ENTITY_PATTERN_FILE = "entity_patterns.txt"
 THREAD_ENTITY_FILE = "thread_entity.txt"
-log_types = ["hostd.log"]
-# note: array stores all entity patterns we are interested, but not used now
-entity_patterns = []
 # note: hash, key is entity, value is an array of logs for that entity
-log_patterns = dict()
+conf = {}
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
@@ -39,11 +37,15 @@ def submit():
     extracted_dirs = extractFiles(local_paths)
 
     session['extracted_dirs'] = extracted_dirs
-    mapping = processLog(extracted_dirs, log_types, entity_patterns, log_patterns)
+
+    mapping = processLog(extracted_dirs, conf['patterns'])
     #pprint(mapping)
+
     return encode(mapping)
-    #mapping = { 'user' : [ {'name' : 'hi' , 'age' : 24 }] }
-    #return render_template('pages/timeline.html', hello = mapping)
+
+@app.route('/patterns')
+def patterns():
+    return encode(conf['patterns'])
 
 @app.route('/testsession')
 def testsession():
@@ -70,21 +72,8 @@ def _check_required_fields(request, *fields):
           abort(400)
 
 def loadPatterns():
-    global log_patterns
-    global entity_patterns
-    log_patterns = { log_type : [] for log_type in log_types }
-
-    with open(LOG_PATTERN_FILE) as f:
-        content = f.readlines()
-    f.close()
-    for line in content:
-        for log_type in log_types:
-            prefix = log_type + ":"
-            if line.startswith(prefix):
-                log_patterns[log_type].append(line.strip().lstrip(prefix))
-                break
+    execfile(PATTERN_CONFIG, conf)
 
 if __name__ == '__main__':
     loadPatterns()
-    logger.debug(log_patterns)
     app.run(debug=True)

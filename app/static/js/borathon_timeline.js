@@ -107,6 +107,7 @@ function onLogSelected(item) {
   //1. Get raw log information
   var filePath = item.source;
   var line = item.line;
+
   // $.ajax({
  //      url: "raw",
  //      data: {linenum: line, file: filePath}
@@ -154,8 +155,4 @@ function onRawLogLinesFetched(loglines_array, n) {
 		
 		$("#rawLogs").append(log_line);
     }
-}
-
-function onPRsLoaded(pr_array) {
-    //here add pr number render logic for display pr links to bugzilla
 }
