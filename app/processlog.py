@@ -50,7 +50,6 @@ def processLog(dirs, conf, offset=0, limit=1000):
     entities = dict()
     entities['host'] = {}
     entities['vm'] = {}
-    entities['other'] = {}
 
     getEntityPattern(dirs, conf, entities)
 
@@ -69,7 +68,22 @@ def processLog(dirs, conf, offset=0, limit=1000):
         all_entries.extend(result)
 
     sorted(all_entries, key=lambda x: x['start'])
-    all_entries = all_entries[offset:offset + limit]
+    filterEntries = []
+    tmp = {}
+    for entry in all_entries:
+        summary = entry['content']
+        if summary in tmp and abs(entry['start'] - tmp[summary]) <= 60000 * 10:
+            print 'Ignore %s' % summary
+            continue
+        else:
+            tmp[summary] = entry['start']
+            filterEntries.append(entry)
+    print filterEntries
+    if offset >= len(all_entries):
+        offset = len(all_entries) - 1
+    if offset + limit >= len(all_entries):
+        limit = len(all_entries) - offset
+    all_entries = filterEntries[offset:offset + limit]
     for entry in all_entries:
         entity = entry['entity']
         root = None
@@ -77,8 +91,6 @@ def processLog(dirs, conf, offset=0, limit=1000):
             root = entities['vm']
         elif entity.startswith('host-'):
             root = entities['host']
-        else:
-            root = entities['other']
         if entity not in root or isinstance(root[entity], set):
             root[entity] = []
         entry.pop('entity', None)
@@ -148,8 +160,6 @@ def extractEntities(file, conf, entities):
                             root = entities['vm']
                         elif entity.startswith('host-'):
                             root = entities['host']
-                        else:
-                            root = entities['other']
 
                         if entity not in root:
                             root[entity] = []
@@ -207,8 +217,10 @@ def SearchLog(keyword, path):
                     continue
                 if 'verbose' in logLine:
                     continue
-                left = max(logLine.find(keyword) - 15, 0)
-                right = max(left + len(keyword) + 15, len(line))
+                epoch = convertTimestampToEpoch(timestamp)
+                left = logLine.find(keyword)
+                right = min(left + len(keyword) + 30, len(logLine))
+                summary = '%s...' % logLine[left:right]
                 className = ''
                 if ' error ' in logLine.lower():
                     className = 'error'
@@ -220,7 +232,7 @@ def SearchLog(keyword, path):
                     className = 'warning'
 
                 record = {
-                    'content' : '...%s...' % logLine[left:right],
+                    'content' : summary,
                     'source' : m.group(1).replace('%s/' % os.path.dirname(__file__), ''),
                     'line' : int(m.group(2)),
                     'start' : convertTimestampToEpoch(timestamp),

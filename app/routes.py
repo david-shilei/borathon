@@ -78,7 +78,7 @@ def result():
     if cache.get(url) is None:
 
        offset = request.args.get('offset', '0')
-       limit = request.args.get('limit', '1000')
+       limit = request.args.get('limit', '999999')
        # download and extract support bundles
        local_paths = downloadSupportBundles(url)
        extracted_dirs = extractFiles(local_paths)
