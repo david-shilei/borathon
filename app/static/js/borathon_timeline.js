@@ -107,15 +107,35 @@ function onLogSelected(item) {
   //1. Get raw log information
   var filePath = item.source;
   var line = item.line;
-  $.ajax({
-      url: "raw",
-      data: {linenum: line, file: filePath}
-  }).done(function(result){
-     var logLineArrays = parseReturnedRawLogLines(result); 
-     onRawLogLinesFetched(logLineArrays, line);
-  });
+  // $.ajax({
+ //      url: "raw",
+ //      data: {linenum: line, file: filePath}
+ //  }).done(function(result){
+ //     var logLineArrays = parseReturnedRawLogLines(result);
+ //     onRawLogLinesFetched(logLineArrays, line);
+ //  });
+ var result = function(){/*
+	     231  logger.debbug(pformat(entities))
+	     232  return entities
+	     233
+	     234  def processLog(dirs, log_types, entity_patterns, log_patterns):
+	     235
+	     236   # entity to logs mapping, return as result of this fuction
+	     237   entity_log_mapping = {}
+	     238   # all entities
+	     239   entities = set()
+	     260
+	     261   # first step: get logs file who should scan
+	     262   _log_files = []
+ */}.toString().slice(14,-3);
+ 
+  var logLineArrays = parseReturnedRawLogLines(result); 
+  onRawLogLinesFetched(logLineArrays, line);
+  
   //2. Get bugzilla pr
 }
+
+// [{"id": 11, "summary": "XX"}, {"id": 22, "summary": "XX"}]
 
 /**
  * The method is called when we have fetched a raw log lines inforamtion around the nth line.
@@ -125,13 +145,15 @@ function onLogSelected(item) {
  * n is current line number, which might need to be highlighted in html.
  */
 function onRawLogLinesFetched(loglines_array, n) {
-    //here add your render logic for displaying row log lines
-    var rltHtml = "<p>";
+	$("#rawLogs").empty();
     for(var i = 0; i < loglines_array.length; i++) {
-       rltHtml += loglines_array[i].line + ": " + loglines_array[i].content; 
+		var log_line = $("<li/>", {
+		    "class": loglines_array[i].line == n ? "log-line exact-line" : "log-line", // you need to quote "class" since it's a reserved keyword
+		    text: loglines_array[i].line + ":     " + loglines_array[i].content
+		});
+		
+		$("#rawLogs").append(log_line);
     }
-    rltHtml += "</p>";
-    alert(rltHtml);
 }
 
 function onPRsLoaded(pr_array) {
