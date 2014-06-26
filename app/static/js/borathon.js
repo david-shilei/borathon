@@ -17,16 +17,16 @@
 // }
 
 
-var pr_result = [
-	{
-		"id": 1266492, 
-		"summary": "Nimbus RbVmomi refactor sub-task: VM clone related methods"
-	},
-	{
-		"id": 1198908, 
-		"summary": "Timeout when fetching esx support bundle"
-	}
-]
+// var pr_result = [
+// 	{
+// 		"id": 1266492,
+// 		"summary": "Nimbus RbVmomi refactor sub-task: VM clone related methods"
+// 	},
+// 	{
+// 		"id": 1198908,
+// 		"summary": "Timeout when fetching esx support bundle"
+// 	}
+// ]
 
 var selected_entities = {};
 
@@ -100,9 +100,7 @@ function generateListedItem(itemName, logs) {
   	link.click(function(){
 		logs = filterLogs($(this));
 		fillTimeline(logs, "logsTimeline");
-		
-		// TODO
-		displayPRs(pr_result);
+		displayPRs($(this));
   	});
 	
 	var badge = $("<span />", {
@@ -144,18 +142,23 @@ function renderEntityList(data) {
 	fillTimeline(total_logs, "logsTimeline");
 }
 
-function displayPRs(prs) {
-	for(i = 0; i < prs.length; i++) {
-		pr = prs[i];
-		var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
+function displayPRs(entityLink) {
+	var entityName = entityLink.data("name");
+    $.ajax({
+        url: "bugzilla/" + entityName
+    }).done(function(result){
+		for(i = 0; i < result.length; i++) {
+			pr = result[i];
+			var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
 
-		var pr_link = $("<a />", {
-		    href: url,
-		    text: "PR#" + pr.id + ": " + pr.summary
-		});
+			var pr_link = $("<a />", {
+			    href: url,
+			    text: "PR#" + pr.id + ": " + pr.summary
+			});
 
-		$("#prsContainer").append($('<p />').append(pr_link));
-	}
+			$("#prsContainer").append($('<p />').append(pr_link));
+		}
+    });
 }
 
 function displayLog(log) {
