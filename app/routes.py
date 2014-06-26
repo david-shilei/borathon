@@ -61,7 +61,7 @@ def timeline():
 def sample():
   return render_template('sample.html')
 
-@app.route('/submit', methods=['GET','POST'])
+@app.route('/submit', methods=['GET'])
 def submit():
     url=request.args.get('url', '')
     return render_template('timeline.html', data = {'url' : url })
