@@ -19,9 +19,12 @@ def getEntityPattern(dirs, conf, entities):
 
 def getBugzillaRecords(entity):
     bugs = []
+    if not entities:
+       return []
     patterns = entities.get(entity)
+    if not patterns:
+       return []
     for p in patterns:
-       #-w bug_id,short_desc | grep '|.*\d.*'
        cmd = r"""python bugzilla.py -q txie '%s' -w bug_id,short_desc|grep '|.*\d.*'""" % (p)
        p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
        output, err = p.communicate()
