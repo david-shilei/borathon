@@ -22,6 +22,7 @@ def RunCmd(cmd, env=None):
 def getTgzFiles(folder_path):
     page = BeautifulSoup(urlopen(folder_path).read())
     urls = []
+    logger.debug(folder_path)
     for link in page.findAll('a', href=re.compile(r'.*\.tgz')):
         urls.append(folder_path + '/' + link['href'])
     return urls
@@ -103,7 +104,8 @@ def downloadSupportBundles(url):
         return "Error: no tgz files found!"
     else:
        hash1 = hashlib.sha1()
-       hash1.update(url)
+       for url1 in urls:
+           hash1.update(url1)
        # new dir name
        newdir = hash1.hexdigest()
        logger.debug("directory name for url %s is %s" % (url, newdir))
@@ -126,12 +128,16 @@ def processUrl(url):
     splits = url.split(' ')
     urls = []
     for split  in splits:
+        split = split.strip()
         if split != "":
             if split.startswith('http') and split.endswith('tgz'):
                 urls.append(split)
+            elif re.match(r'^\d{7}$', split):
+                split = split + '/*.tgz'
+                urls += parseWildcardTgzUrl(split)
             else:
                 urls += parseWildcardTgzUrl(split)
-    return urls
+    return sorted(urls)
 
 if __name__ == '__main__':
 
