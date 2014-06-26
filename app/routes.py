@@ -23,7 +23,11 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 @app.route('/')
 def home():
-  return render_template('pages/home.html')
+  return render_template('home.html')
+
+@app.route('/sample')
+def sample():
+  return render_template('sample.html')
 
 @app.route('/submit', methods=['GET','POST'])
 def submit():
@@ -38,6 +42,8 @@ def submit():
     mapping = processLog(extracted_dirs, log_types, entity_patterns, log_patterns)
     #pprint(mapping)
     return encode(mapping)
+    #mapping = { 'user' : [ {'name' : 'hi' , 'age' : 24 }] }
+    #return render_template('pages/timeline.html', hello = mapping)
 
 @app.route('/testsession')
 def testsession():

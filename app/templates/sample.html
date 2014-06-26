@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <title>VMWare vSAN Log Visualization</title>
+        <script src="../static/js/jquery-2.1.1.min.js"></script>
+
+        <script type="text/javascript" src="../static/js/timeline.js"></script>
+        <script type="text/javascript" src="../static/js/borathon_timeline.js"></script>
+        <script type="text/javascript" src="../static/js/borathon.js"></script>
+        <link href="../static/css/timeline.css" rel="stylesheet">
+        <style type="text/css">
+            body {
+                font: 14pt arial;
+            }
+            input {
+                font: 14pt arial;
+            }
+
+            /* custom styles for individual items, load this after timeline.css */
+
+            div.info {
+                background-color: greenyellow;
+                border-color: green;
+                width: 100px;
+            }
+
+            /* create a custom sized dot at the bottom of the red item */
+            div.verbose {
+                background-color: red;
+                border-color: darkred;
+                color: white;
+                font-family: monospace;
+                box-shadow: 0 0 10px gray;
+                width: 100px;
+            }
+            div.timeline-event-dot.verbose {
+                border-radius: 10px;
+                border-width: 10px;
+            }
+            div.timeline-event-line.verbose {
+                border-width: 5px;
+            }
+            div.timeline-event-box.verbose {
+                border-radius: 0;
+                border-width: 2px;
+                font-size: 24pt;
+                font-weight: bold;
+            }
+
+            div.orange {
+                background-color: gold;
+                border-color: orange;
+            }
+            div.timeline-event-selected.orange {
+                /* custom colors for selected orange items */
+                background-color: orange;
+                border-color: orangered;
+            }
+
+            div.magenta {
+                background-color: magenta;
+                border-color: purple;
+                color: white;
+            }
+
+            /* our custom classes overrule the styles for selected events,
+            so lets define a new style for the selected events */
+            div.timeline-event-selected {
+                background-color: white;
+                border-color: black;
+                color: black;
+                box-shadow: 0 0 10px gray;
+            }
+        </style>
+
+
+        <script>
+            
+        $(document).ready(function () { 
+                $("#header").load("header.html"); 
+                $("#footer").load("footer.html"); 
+
+                /*
+                // specify options
+                var options = {
+                    "width":  "100%",
+                    //"scale": links.Timeline.StepDate.SCALE.MILLISECOND,
+                    //"step": 1,
+                    "axisOnTop": true,
+                    "cluster": true,
+                    "style": "dot" // optional
+                };
+
+                // Instantiate our timeline object.
+                var timeline = new links.Timeline(document.getElementById('mytimeline'));
+                function onselect() {
+                    var sel = timeline.getSelection();
+                    if (sel.length) {
+                        if (sel[0].row != undefined) {
+                            var row = sel[0].row;
+                            var item = timeline.getItem(row);
+                            alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
+                            //retriving other detail...
+                        }
+                    }
+                }
+                links.events.addListener(timeline, 'select', onselect);
+                */
+                $.getJSON("hostd.log.json", function(data) {
+                    // Draw our timeline with the created data and options
+                    //alert("mlgb........");
+                    //timeline.draw(data, options);
+                    fillTimeline(data, 'mytimeline');
+                    addTimelineSelectionListener(function(item) {
+                        alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
+                    });
+                    // xixi, hidden one type
+                    //$(".verbose").css("visibility", "hidden");
+                    $("#myselect").change(function() {
+                        //alert($(this).children('option:selected').val());
+                        $val = $(this).children('option:selected').val();
+                            $(".verbose").css("visibility", "hidden");
+                            $(".info").css("visibility", "hidden");
+                        if($val == 'all') {
+                            $(".verbose").css("visibility", "visible");
+                            $(".info").css("visibility", "visible");
+                        } else {
+                           $("."+$val).css("visibility", "visible"); 
+                    }
+                    });
+                });
+
+            });
+            
+        </script>
+    </head>
+    <body>
+        <div id="header"></div>
+        <hr/>
+        <h3>A <a href="hostd.log">hostd.log</a> visualization. UI requesting json sample: <a href="hostd.log.json">JSON Sample</a></h3>
+        <div>
+            <select id="myselect">
+                <option value="all">all</option>
+                <option value="verbose">verbose</option>
+                <option value="info">info</option>
+            </select>
+        </div>
+        <div id="mytimeline"></div>
+        <hr/>
+        <div id="footer">
+        </div>
+    </body>
+</html>
