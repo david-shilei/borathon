@@ -63,7 +63,7 @@ div.timeline-event-selected {
 
 /* TODO: use another color or pattern? */
 div.timeline-event-cluster {
-    background: url('img/cluster_bg.png') #97b0f8;
+    background: url('../img/cluster_bg.png') #97b0f8;
     color: #ffffff;
 }
 
