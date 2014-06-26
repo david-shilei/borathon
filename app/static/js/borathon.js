@@ -35,8 +35,9 @@ $(document).ready(function(){
 	//
 	// });
 	//
-	renderEntityList(json_result);
+	// renderEntityList(json_result);
   	// buildForEntities(json_result);
+	getAndRenderSupportBundle(url);
 });
 
 
@@ -54,6 +55,15 @@ $(document).ready(function(){
 //     </div>
 //   </div>
 // </div>
+
+function getAndRenderSupportBundle(url) {
+	$.getJSON( "timeline.json", {
+		url: url,
+	    format: "json"
+	}).done(function( data ) {
+		renderEntityList(data);
+	});
+}
 
 function generateEntitiesGroup(itemName) {
 	var panel = $("<div />", {
