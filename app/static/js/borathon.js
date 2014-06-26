@@ -1,6 +1,6 @@
 var selected_entities = {};
 var offset = 0;
-EACH_LIMIT = 100;
+EACH_LIMIT = 2500;
 
 $(document).ready(function(){	
 	getAndRenderSupportBundle(sb_url, offset);
