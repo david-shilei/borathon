@@ -68,7 +68,7 @@ def processLog(dirs, conf, offset=0, limit=1000):
     for result in results:
         all_entries.extend(result)
 
-    sorted(all_entries, key=lambda x: x['epoch'])
+    sorted(all_entries, key=lambda x: x['start'])
     all_entries = all_entries[offset:offset + limit]
     for entry in all_entries:
         entity = entry['entity']
@@ -96,7 +96,8 @@ def processLog(dirs, conf, offset=0, limit=1000):
             if entities[key][entity] == []:
                 entities[key].pop(entity, None)
                 continue
-            entities[key][entity] = sorted(entities[key][entity], key=lambda x: x['epoch'])
+            entities[key][entity] = sorted(entities[key][entity], key=lambda x:
+                                           x['start'])
     return entities
 
 
@@ -162,7 +163,8 @@ def dumpLogRecords(records):
 def getNLines(fileName, lineNum, n):
     start = lineNum + n
     length = 2 * n + 1
-    cmd = r"""cat -n %s |head -%d |tail -%d""" % (fileName, start, length)
+    cmd = r"""cat -n %s/%s |head -%d |tail -%d""" % (os.path.dirname(__file__), fileName, start, length)
+    print cmd
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     output, err = p.communicate()
     return output
@@ -218,12 +220,12 @@ def SearchLog(keyword, path):
                     className = 'warning'
 
                 record = {
-                    'log' : '...%s...' % logLine[left:right],
-                    'source' : m.group(1).replace('%s/' % path, ''),
+                    'content' : '...%s...' % logLine[left:right],
+                    'source' : m.group(1).replace('%s/' % os.path.dirname(__file__), ''),
                     'line' : int(m.group(2)),
-                    'epoch' : convertTimestampToEpoch(timestamp),
+                    'start' : convertTimestampToEpoch(timestamp),
                     'entity': keyword,
                     'className': className
                 }
                 result.append(record)
-    return sorted(result, key=lambda x: x['epoch'])
+    return sorted(result, key=lambda x: x['start'])

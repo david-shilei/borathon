@@ -87,12 +87,13 @@ function parseReturnedRawLogLines(result) {
        8 # Problematic frame:
        9    # C  [libgtk-x11-2.0.so.0+0x13cf88]  gtk_menu_get_type+0x488
        */
-    var result_pattern = /^\s+(\d+)\s+(.+)$/g;
+    var result_pattern = /^\s+(\d+)\s+(.+)$/;
     var rawLogLines_inStr = result.split("\n");
     var i;
     var returnedArray = [];
     for(i = 0; i < rawLogLines_inStr.length; i++) {
         var rawLine = rawLogLines_inStr[i];
+		  //alert("rawLine=" + rawLine);
         var match = result_pattern.exec(rawLine);
         if(match != null) {
             var lineNm = match[1];
@@ -108,30 +109,14 @@ function onLogSelected(item) {
   var filePath = item.source;
   var line = item.line;
 
-  // $.ajax({
- //      url: "raw",
- //      data: {linenum: line, file: filePath}
- //  }).done(function(result){
- //     var logLineArrays = parseReturnedRawLogLines(result);
- //     onRawLogLinesFetched(logLineArrays, line);
- //  });
- var result = function(){/*
-	     231  logger.debbug(pformat(entities))
-	     232  return entities
-	     233
-	     234  def processLog(dirs, log_types, entity_patterns, log_patterns):
-	     235
-	     236   # entity to logs mapping, return as result of this fuction
-	     237   entity_log_mapping = {}
-	     238   # all entities
-	     239   entities = set()
-	     260
-	     261   # first step: get logs file who should scan
-	     262   _log_files = []
- */}.toString().slice(14,-3);
+ $.ajax({
+     url: "raw",
+     data: {linenum: line, file: filePath}
+ }).done(function(result){
+    var logLineArrays = parseReturnedRawLogLines(result);
+    onRawLogLinesFetched(logLineArrays, line);
+ });
  
-  var logLineArrays = parseReturnedRawLogLines(result); 
-  onRawLogLinesFetched(logLineArrays, line);
   
   //2. Get bugzilla pr
 }

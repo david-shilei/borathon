@@ -37,7 +37,7 @@ $(document).ready(function(){
 	//
 	// renderEntityList(json_result);
   	// buildForEntities(json_result);
-	getAndRenderSupportBundle(url);
+	getAndRenderSupportBundle(sb_url);
 });
 
 
@@ -57,7 +57,7 @@ $(document).ready(function(){
 // </div>
 
 function getAndRenderSupportBundle(url) {
-	$.getJSON( "timeline.json", {
+	$.getJSON( "timeline", {
 		url: url,
 	    format: "json"
 	}).done(function( data ) {

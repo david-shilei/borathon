@@ -22,44 +22,40 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 def home():
   return render_template('home.html')
 
-@app.route('/timeline')
+@app.route('/timeline1')
 def timeline():
-    mydata = {
-	"host": {
-		"host-9:91:76e1b7f8-0-13e9": [
-			{
-				"start": 1231231231123,
-				"line": 234,
-				"file": "hostd.log",
-				"className": "host",
-				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
- 			    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }],
-		"host-9:94:22480d43-0-1ae8": [
-			{
-				"start": 1231231231231,
-				"line": 235,
-				"file": "hostd.log",
-				"className": "host",
-				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
-				"detail": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }]
-	},
-	"vm": {
-		"vm-esx.0": [
-		{
-			"start": 1231231231123,
-			"line": 234,
-			"file": "hostd.log",
-			"className": "host",
-			"content": "Failed to load virtual machine: vim.fault.FileNotFound",
-		    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
-		}]
-	}
-    }
-    #print encode(mydata)
-    print str(mydata)
-    mapping = { 'user' : [ {'name' : 'hi' , 'age' : json.dumps(str(mydata)) }] }
-    return render_template('timeline.html', hello = mapping)
-    #return render_template('timeline.html', data = mydata)
+#    mydata = {
+#	"host": {
+#		"host-9:91:76e1b7f8-0-13e9": [
+#			{
+#				"start": 1231231231123,
+#				"line": 234,
+#				"file": "hostd.log",
+#				"className": "host",
+#				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+# 			    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }],
+#		"host-9:94:22480d43-0-1ae8": [
+#			{
+#				"start": 1231231231231,
+#				"line": 235,
+#				"file": "hostd.log",
+#				"className": "host",
+#				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+#				"detail": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }]
+#	},
+#	"vm": {
+#		"vm-esx.0": [
+#		{
+#			"start": 1231231231123,
+#			"line": 234,
+#			"file": "hostd.log",
+#			"className": "host",
+#			"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+#		    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
+#		}]
+#	}
+#    }
+    return encode(mydata)
 
 @app.route('/sample')
 def sample():
@@ -71,7 +67,7 @@ def submit():
     return render_template('timeline.html', data = {'url' : url })
 
 
-@app.route('/result', methods=['GET', 'POST'])
+@app.route('/timeline', methods=['GET', 'POST'])
 def result():
     url=request.args.get('url', '')
     #url = "1249097/*.tgz"
