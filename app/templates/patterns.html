@@ -1,8 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class="container">
-      <h4>Patterns</h4>
+	  <div class="clearfix">
+		  <h4 class="pull-left">Patterns</h4>
+		  <div class="pull-right" style="margin-top: 10px;">
+			  <button class="btn btn-info" style="margin-right:20px;">
+			  	<i class="icon-plus icon-white"></i> Add
+			  </button>
+	      </div>
+	  </div>
+      
 	  <hr/>
+	  
 		{% for p in patterns %}
 			<div class="well" style="margin-bottom: 20px;">
 				  {% for detail in  p['details'] %}
