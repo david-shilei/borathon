@@ -130,7 +130,7 @@ function onRawLogLinesFetched(loglines_array, n) {
     for(var i = 0; i < loglines_array.length; i++) {
        rltHtml += loglines_array[i].line + ": " + loglines_array[i].content; 
     }
-    rltHtml = "</p>";
+    rltHtml += "</p>";
     alert(rltHtml);
 }
 
