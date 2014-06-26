@@ -2,11 +2,19 @@ import re, os, tarfile, zipfile, hashlib
 from urllib2 import urlopen
 from bs4 import BeautifulSoup
 from mylogger import logger
+import subprocess
 
 # config
 URL_PREFIX="http://engweb.eng.vmware.com/bugs/files/0/"
 LOCAL_DIR="data"
 
+def RunCmd(cmd, env=None):
+    p = subprocess.Popen(args=cmd, executable='/bin/bash', stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, shell=True, env=env)
+    out, err = p.communicate()
+    p.poll()
+    ret = p.returncode
+    return (ret, out, err)
 
 # foler_path: like http://engweb.eng.vmware.com/bugs/files/0/1/2/4/9/0/9/7/
 # return array of urls for tgz files
@@ -23,20 +31,23 @@ def getTgzFiles(folder_path):
 def downloadFile(local_new_dir, url):
     filename = os.path.basename(url)
     logger.debug("Downloading " + filename)
-    local_path = os.path.join(local_new_dir, filename)
+    local_path = os.path.abspath(os.path.join(local_new_dir, filename))
     if(os.path.exists(local_path)):
         logger.debug("%s already exists, won't download again" % local_path)
         return local_path
 
-    req = urlopen(url)
-    CHUNK = 16*1024
-    with open(local_path, 'wb') as f:
-        while True:
-            chunk = req.read(CHUNK)
-            if not chunk: break
-            f.write(chunk)
-        f.flush()
-        f.close()
+    #req = urlopen(url)
+    #CHUNK = 512*1024
+    #with open(local_path, 'wb') as f:
+    #    while True:
+    #        chunk = req.read(CHUNK)
+    #        if not chunk: break
+    #        f.write(chunk)
+    #    f.flush()
+    #    f.close()
+    ret, out, err = RunCmd('/usr/local/bin/axel -q -n 8 -o %s %s' % (local_path, url))
+    if ret != 0:
+        raise Exception('Cannot download file: %s, out: %s, err: %s' % (url, out, err))
     return local_path
 
 def downloadFiles(newdir, urls):
@@ -62,12 +73,12 @@ def extractFile(path, to_directory=None):
 
     cwd = os.getcwd()
     if to_directory is None:
-        to_directory = os.path.dirname(cwd + '/' +  path)
+        to_directory = os.path.dirname(path)
         print to_directory
     os.chdir(to_directory)
 
     try:
-        file = opener(cwd + '/' + path , mode)
+        file = opener(path , mode)
         file.extractall()
         file.close()
     finally:

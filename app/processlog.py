@@ -49,10 +49,16 @@ def processLog(dirs, log_types, entity_patterns, log_patterns):
         extractEntities(log_file, _log_patterns, entities)
     logger.debug(entities)
 
-    # third step: extract all logs related with the entities
-    for log_file in _log_files:
-        for entity in entities:
-            extractLogLines(log_file, entity, entity_log_mapping)
+    # third step: extract all logs related with the entities'
+    for entity in entities:
+        entries = SearchLog(entity, os.path.dirname(dirs[0]))
+        if entity in entity_log_mapping:
+            entity_log_mapping.extends(entries)
+        else:
+            entity_log_mapping[entity] = entries
+    #for log_file in _log_files:
+    #    for entity in entities:
+    #        extractLogLines(log_file, entity, entity_log_mapping)
 
     result = []
     for entity in entity_log_mapping:
@@ -70,7 +76,12 @@ def convertTimestampToEpoch(timestamp):
     datetime = timestamp[:-5]
     ms = timestamp[-4:].rstrip('Z')
     pattern = "%Y-%m-%dT%H:%M:%S"
-    epoch = int(time.mktime(time.strptime(datetime, pattern))) * 1000 + int(ms)
+    intms = 0
+    try:
+        intms = int(ms)
+    except:
+        pass
+    epoch = int(time.mktime(time.strptime(datetime, pattern))) * 1000 + intms
     return epoch
 
 def extractLogLines(file, entity, entity_log_mapping):
@@ -116,3 +127,50 @@ def getNLines(fileName, lineNum, n):
     output, err = p.communicate()
     return output
 
+CODESEARCH_ROOT = os.path.abspath(os.path.join(__file__, '../../bin/codesearch-0.01/'))
+CINDEX = os.path.join(CODESEARCH_ROOT, 'cindex')
+CSEARCH = os.path.join(CODESEARCH_ROOT, 'csearch')
+
+def RunCmd(cmd, env=None):
+    print cmd
+    p = subprocess.Popen(args=cmd, executable='/bin/bash', stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE, shell=True, env=env)
+    out, err = p.communicate()
+    p.poll()
+    ret = p.returncode
+    return (ret, out, err)
+
+def IndexLog(path):
+    indexPath = os.path.abspath(os.path.join(path, '..', '%s.index' % os.path.basename(path)))
+    RunCmd('rm -f %s' % indexPath)
+    ret, out, err = RunCmd('%s %s' % (CINDEX, path), env={'CSEARCHINDEX': indexPath})
+    if ret != 0:
+        raise Exception('Cannot index log, stdout: %s, stderr: %s' % (out, err))
+
+def SearchLog(keyword, path):
+    indexPath = os.path.abspath(os.path.join(path, '..', '%s.index' % os.path.basename(path)))
+    if not os.path.exists(indexPath):
+        IndexLog(path)
+    ret, out, err = RunCmd('%s -i -n %s' % (CSEARCH, keyword), env={'CSEARCHINDEX': indexPath})
+    lineRegex = re.compile('([^:]*):(\d+):(.*)')
+    datetimeRegex = re.compile('\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}')
+    result = []
+    for line in out.split('\n'):
+        if line != None and line != '':
+            m = lineRegex.match(line)
+            if m:
+                logLine = m.group(3)
+                timestamp =  logLine[0 : TIMESTAMP_LENGTH]
+                if not datetimeRegex.match(timestamp):
+                    continue
+                record = {
+                    'log' : logLine,
+                    'source' : m.group(1),
+                    'line' : m.group(2),
+                    'epoch' : convertTimestampToEpoch(timestamp)
+                }
+                result.append(record)
+    return sorted(result, key=lambda x: x['epoch'])
+
+if __name__ == '__main__':
+    print SearchLog('HB-host-10@10888-3e0d543a-cc-fb6f', '/Users/hackerzhou/Downloads/esx-w2-erqa230-2014-05-09--23.23')
