@@ -85,4 +85,9 @@ so lets define a new style for the selected events */
         box-shadow: 0 0 10px gray;
     }
 
+    div.timeline-event-content {
+        margin: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+    }
 /* End css for timeline log level */
