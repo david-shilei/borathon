@@ -66,6 +66,10 @@ def submit():
     url=request.args.get('url', '')
     return render_template('timeline.html', data = {'url' : url })
 
+@app.route('/file/<path:filepath>')
+def showfile(filename):
+    path = os.path.join(app.root_path, filepath)
+    return send_from_directory(os.path.dir(path), os.path.basename(path))
 
 @app.route('/timeline', methods=['GET', 'POST'])
 def result():
