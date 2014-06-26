@@ -5,6 +5,11 @@
 	background: url('../img/url.gif') no-repeat center center;
 }
 
+#logo {
+	height: 37px;
+	width: 120px;
+}
+
 .modal {
 	width: 720px;
 	left: 45%;

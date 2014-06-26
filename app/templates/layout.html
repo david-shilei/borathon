@@ -8,7 +8,9 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
+	<link href="../static/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="../static/css/bootstrap.css" rel="stylesheet">
+	<link href="../static/css/timeline.css" rel="stylesheet">
 	<link href="../static/css/borathon.css" rel="stylesheet">
     <style>
       body {
@@ -42,6 +44,8 @@
           </button>
           <a class="brand" href="#">Support Bundle Visualization</a>
           <div class="nav-collapse collapse">
+			  <p class="navbar-text pull-right"><img id="logo" src="../static/img/logo.jpg"/></p>
+			  
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
               <li><a href="/patterns">Patterns</a></li>
@@ -57,6 +61,12 @@
 	 {% endblock %}
 
     </div> <!-- /container -->
+	
+	<hr/>
+
+	<footer>
+		<p style="margin-left: 50px;">&copy; VMWare 2014</p>
+	</footer>
 
     <!-- Le javascript
     ================================================== -->
