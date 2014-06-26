@@ -10,6 +10,14 @@
 	left: 45%;
 }
 
+.timeTravel.prev {
+	float:left;
+}
+
+.timeTravel.next {
+	float:right;
+}
+
 .navbar-vmware .navbar-inner {
     background-color: #1b1b1b;
     background-image: linear-gradient(to bottom, #222222, #111111);

@@ -1,64 +1,31 @@
-// // var myObject = eval('(' + myJSONtext + ')');
-// // var myJSONText = JSON.stringify(myObject, replacer);
-// // function replacer(key, value) {
-// //     if (typeof value === 'number' && !isFinite(value)) {
-// //         return String(value);
-// //     }
-// //     return value;
-// // }
-
-// var myObject = eval('(' + myJSONtext + ')');
-// var myJSONText = JSON.stringify(myObject, replacer);
-// function replacer(key, value) {
-//     if (typeof value === 'number' && !isFinite(value)) {
-//         return String(value);
-//     }
-//     return value;
-// }
-
-
-// var pr_result = [
-// 	{
-// 		"id": 1266492,
-// 		"summary": "Nimbus RbVmomi refactor sub-task: VM clone related methods"
-// 	},
-// 	{
-// 		"id": 1198908,
-// 		"summary": "Timeout when fetching esx support bundle"
-// 	}
-// ]
-
 var selected_entities = {};
+var offset = 0;
+EACH_LIMIT = 100;
 
 $(document).ready(function(){	
-	// $.get( "http://ec2-54-254-246-134.ap-southeast-1.compute.amazonaws.com/borathon/hostd.log.json", function( data, status) {
-	//
-	// });
-	//
-	// renderEntityList(json_result);
-  	// buildForEntities(json_result);
-	getAndRenderSupportBundle(sb_url);
+	getAndRenderSupportBundle(sb_url, offset);
+});
+
+$(".timeTravel").click(function(){
+	var isNext = $(this).hasClass('prev');
+	if(isNext) {
+		offset += EACH_LIMIT;
+	} else {
+		offset -= EACH_LIMIT;
+		if(offset < 0) {
+			offset = 0;
+		}
+	}
+	
+    getAndRenderSupportBundle(sb_url, offset);
 });
 
 
-// <div class="panel panel-default">
-//   <div class="panel-heading">
-//     <h4 class="panel-title">
-//       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-//         Collapsible Group Item #1
-//       </a>
-//     </h4>
-//   </div>
-//   <div id="collapseOne" class="panel-collapse collapse in">
-//     <div class="panel-body">
-//       VSDSD
-//     </div>
-//   </div>
-// </div>
-
-function getAndRenderSupportBundle(url) {
+function getAndRenderSupportBundle(url, offset) {
 	$.getJSON( "timeline", {
 		url: url,
+		offset: offset,
+		limit: EACH_LIMIT,
 	    format: "json"
 	}).done(function( data ) {
 		$("#loading").hide();
@@ -120,6 +87,7 @@ function generateListedItem(itemName, logs) {
 }
 
 function renderEntityList(data) {
+	$("#accordion").empty();
 	total_logs = [];
 	for(var entityType in data) {
 		entity_logs_count = 0;
