@@ -26,8 +26,8 @@
 }
 
 .entity-link.selected, .entity-link.selected:focus, .entity-link.selected:hover {
-	background-color: #1b1b1b;
-	color: #FFFFFF;
+	background-color: #cccccc;
+	color: #111111;
 	text-shadow: "0 1px 0 rgba(255, 255, 255, 0.5)";
 }
 
@@ -39,8 +39,8 @@
 
 span.legend {
 	margin-left: 30px;
-	padding: 2px 3px;
-	border-radius:5px;
+	padding: 2px 5px;
+	border-radius:25px;
 }
 
 div.info, span.legend.info {

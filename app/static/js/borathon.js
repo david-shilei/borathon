@@ -56,7 +56,7 @@ function generateEntitiesGroup(itemName) {
 function generateListedItem(itemName, logs) {
 	var link = $("<a />", {
 	    href: "#",
-	    "class": "entity-link", // you need to quote "class" since it's a reserved keyword
+	    "class": "entity-link selected", // you need to quote "class" since it's a reserved keyword
 	    text: itemName,
 		title: itemName,
 		style: "clear:both;"
@@ -111,22 +111,24 @@ function renderEntityList(data) {
 }
 
 function displayPRs(entityLink) {
-	var entityName = entityLink.data("name");
-    $.ajax({
-        url: "bugzilla/" + entityName
-    }).done(function(result){
-		for(i = 0; i < result.length; i++) {
-			pr = result[i];
-			var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
+	var selected = entityLink.hasClass('selected');
+	if(selected) {
+		var entityName = entityLink.data("name");
+	    $.ajax({
+	        url: "bugzilla/" + entityName
+	    }).done(function(result){
+			for(i = 0; i < result.length; i++) {
+				pr = result[i];
+				var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
+				var pr_link = $("<a />", {
+				    href: url,
+				    text: "PR#" + pr.id + ": " + pr.summary
+				});
 
-			var pr_link = $("<a />", {
-			    href: url,
-			    text: "PR#" + pr.id + ": " + pr.summary
-			});
-
-			$("#prsContainer").append($('<p />').append(pr_link));
-		}
-    });
+				$("#prsContainer").append($('<p />').append(pr_link));
+			}
+	    });
+	}
 }
 
 function displayLog(log) {
