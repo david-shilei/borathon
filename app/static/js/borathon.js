@@ -7,6 +7,7 @@ $(document).ready(function(){
 });
 
 $(".timeTravel").click(function(){
+    $("#loading").show();
 	var isNext = !$(this).hasClass('prev');
 	if(isNext) {
 		offset += EACH_LIMIT;
