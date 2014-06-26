@@ -24,14 +24,16 @@ var json_result = {
 				"line": 234,
 				"file": "hostd.log",
 				"className": "host",
- 			    "content":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }],
+				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+ 			    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }],
 		"host-9:94:22480d43-0-1ae8": [
 			{
 				"start": 1231231231231,
 				"line": 235,
 				"file": "hostd.log",
 				"className": "host",
-				"content": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }]
+				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+				"detail": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }]
 	},
 	"vm": {
 		"vm-esx.0": [
@@ -40,12 +42,13 @@ var json_result = {
 			"line": 234,
 			"file": "hostd.log",
 			"className": "host",
-		    "content":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
+			"content": "Failed to load virtual machine: vim.fault.FileNotFound",
+		    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
 		}]
 	}
 }
 
-var selected_entities = [];
+var selected_entities = {};
 
 $(document).ready(function(){	
 	// $.get( "http://ec2-54-254-246-134.ap-southeast-1.compute.amazonaws.com/borathon/hostd.log.json", function( data, status) {
@@ -106,7 +109,7 @@ function generateListedItem(itemName, logs) {
 	
   	link.click(function(){
 		logs = filterLogs($(this));
-		// fillTimeline(logs);
+		fillTimeline(logs, "logsTimeline");
   	});
 	
 	var badge = $("<span />", {
@@ -127,24 +130,25 @@ function generateListedItem(itemName, logs) {
 function renderEntityList(data) {
 	total_logs = [];
 	for(var entityType in data) {
-		entity_type_logs = [];
+		entity_logs_count = 0;
 		entities = data[entityType];
 		entityGroup = generateEntitiesGroup(entityType);
 		
 		for(var entityName in entities) {
 			logs = entities[entityName];
-			entity_type_logs.push(logs);
-			total_logs.push(logs);
+			entity_logs_count += logs.length
+			total_logs = total_logs.concat(logs);
+			// total_logs += logs;
 			var new_item = generateListedItem(entityName, logs);
 			entityGroup.find(".entityList").append(new_item);
 		}
 		
 		var entityTypeTitle = entityGroup.find(".entity-type-title");
-		entityTypeTitle.text(entityTypeTitle.text() + "(" + entity_type_logs.length + ")");
+		entityTypeTitle.text(entityTypeTitle.text() + "(" + entity_logs_count + ")");
 		$("#accordion").append(entityGroup);
 	}
 
-	fillTimeline(total_logs, "#logsTimeline");
+	fillTimeline(total_logs, "logsTimeline");
 }
 
 function displayLog(log) {
@@ -157,22 +161,23 @@ function displayLog(log) {
 function filterLogs(entityLink) {
 	var entityName = entityLink.data("name");
 	var selected = entityLink.hasClass('selected');
+	var logs = entityLink.data("logs");
 
 	if(selected) {
 		entityLink.removeClass('selected');
-		while (selected_entities.indexOf(entityName) !== -1) {
-		  selected_entities.splice(selected_entities.indexOf(entityName), 1);
-		}
+		delete selected_entities[entityName];
+		// while (selected_entities.indexOf(entityName) !== -1) {
+// 		  selected_entities.splice(selected_entities.indexOf(entityName), 1);
+// 		}
 	} else {
 		entityLink.addClass('selected');
-		selected_entities.push(entityName);
+		selected_entities[entityName] = logs;
 	}
 
-	var logs = [];
-	for(var i in selected_entities) {
-		var e = selected_entities[i];
-		logs.push(json_result[e]);
+	var result = [];
+	for(var e in selected_entities) {
+		result = result.concat(selected_entities[e]);
 	}
-	
-	return logs;
+
+	return result;
 }
