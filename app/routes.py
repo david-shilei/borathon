@@ -12,8 +12,8 @@ from mylogger import logger
 app = Flask(__name__)
 
 PATTERN_CONFIG = "patterns.conf"
-# note: hash, key is entity, value is an array of logs for that entity
 conf = {}
+cache = {}
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
@@ -70,17 +70,18 @@ def submit():
 @app.route('/timeline', methods=['GET', 'POST'])
 def result():
     url=request.args.get('url', '')
-    #url = "1249097/*.tgz"
-    offset = request.args.get('offset', '0')
-    limit = request.args.get('limit', '1000')
+    if cache.get(url) is None:
 
-    # download and extract support bundles
-    local_paths = downloadSupportBundles(url)
-    extracted_dirs = extractFiles(local_paths)
+       offset = request.args.get('offset', '0')
+       limit = request.args.get('limit', '1000')
+       # download and extract support bundles
+       local_paths = downloadSupportBundles(url)
+       extracted_dirs = extractFiles(local_paths)
 
-    mapping = processLog(extracted_dirs, conf['patterns'], int(offset), int(limit))
-    #pprint(mapping)
-    return encode(mapping)
+       mapping = processLog(extracted_dirs, conf['patterns'], int(offset), int(limit))
+       print cache.get(url)
+       cache[url] = encode(mapping)
+    return cache[url]
 
 
 @app.route('/patterns')
