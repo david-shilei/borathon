@@ -1,12 +1,4 @@
 
-/**
- * Sample:
- * fillTimeline(data, 'mytimeline');
- * addTimelineSelectionListener(function(item) {
- *    alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
- *  });
- *
- */
 var timeline;
 
 function initTimeline(div_id) {
@@ -45,6 +37,7 @@ function fillTimeline(log_array, div_id) {
     if(timeline == null) {
         timeline = initTimeline(div_id);
         timeline.draw(log_array, options);
+        addTimelineSelectionListener(onLogSelected);
     } else {
         timeline.setData(log_array);
         timeline.redraw();
@@ -58,6 +51,11 @@ function fillTimeline(log_array, div_id) {
  *    //the selected data is passed into this function.
  *    //data is one item such that {"content" : "xxxxx", "start" : 123423123"}
  * }
+ * Smaple Code: 
+ * addTimelineSelectionListener(function(item) {
+ *    alert("You just selected: " + "Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
+ *  });
+
  *
  */
 function addTimelineSelectionListener(onSelectFunc) {
@@ -75,4 +73,67 @@ function addTimelineSelectionListener(onSelectFunc) {
             }
         });
     }
+}
+
+function parseReturnedRawLogLines(result) {
+    /* result looks like this: (...)
+       1    #
+       2   # A fatal error has been detected by the Java Runtime Environment:
+       3  #
+       4 #  SIGSEGV (0xb) at pc=0x00007fabf12a1f88, pid=3356, tid=140377072920320
+       5    #
+       6   # JRE version: Java(TM) SE Runtime Environment (7.0_40-b43) (build 1.7.0_40-b43)
+       7  # Java VM: Java HotSpot(TM) 64-Bit Server VM (24.0-b56 mixed mode linux-amd64 compressed oops)
+       8 # Problematic frame:
+       9    # C  [libgtk-x11-2.0.so.0+0x13cf88]  gtk_menu_get_type+0x488
+       */
+    var result_pattern = /^\s+(\d+)\s+(.+)$/g;
+    var rawLogLines_inStr = result.split("\n");
+    var i;
+    var returnedArray = [];
+    for(i = 0; i < rawLogLines_inStr.length; i++) {
+        var rawLine = rawLogLines_inStr[i];
+        var match = result_pattern.exec(rawLine);
+        if(match != null) {
+            var lineNm = match[1];
+            var content = match[2];
+            returnedArray.push({line: match[1], content: match[2]});
+        }
+    }
+    return returnedArray;
+}
+
+function onLogSelected(item) {
+  //1. Get raw log information
+  var filePath = item.source;
+  var line = item.line;
+  $.ajax({
+      url: "raw",
+      data: {linenum: line, file: filePath}
+  }).done(function(result){
+     var logLineArrays = parseReturnedRawLogLines(result); 
+     onRawLogLinesFetched(logLineArrays, line);
+  });
+  //2. Get bugzilla pr
+}
+
+/**
+ * The method is called when we have fetched a raw log lines inforamtion around the nth line.
+ * loglines_array is a js array such that each element is an object:
+ * {line: an int, content: a string}
+ * it contains 2*n + 1 max lines.
+ * n is current line number, which might need to be highlighted in html.
+ */
+function onRawLogLinesFetched(loglines_array, n) {
+    //here add your render logic for displaying row log lines
+    var rltHtml = "<p>";
+    for(var i = 0; i < loglines_array.length; i++) {
+       rltHtml += loglines_array[i].line + ": " + loglines_array[i].content; 
+    }
+    rltHtml = "</p>";
+    alert(rltHtml);
+}
+
+function onPRsLoaded(pr_array) {
+    //here add pr number render logic for display pr links to bugzilla
 }

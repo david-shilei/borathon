@@ -113,7 +113,6 @@
                     });
                     // xixi, hidden one type
                     //$(".verbose").css("visibility", "hidden");
-                    /*
                     $("#myselect").change(function() {
                         //alert($(this).children('option:selected').val());
                         $val = $(this).children('option:selected').val();
@@ -126,11 +125,22 @@
                            $("."+$val).css("visibility", "visible"); 
                     }
                     });
-                    */
                 });
 
             });
             
+            function myFunction() {
+                /*
+                $.ajax({
+                    url: "http://localhost:5000/raw",
+                    crossDomain:true,
+                    data: {linenum: 5, file: "/home/lich/test.log"}
+                    }).done(function(result){
+                    var logLineArrays = parseReturnedRawLogLines(result); 
+                    onRawLogLinesFetched(logLineArrays);
+                });
+                */
+            }
         </script>
     </head>
     <body>
@@ -143,6 +153,9 @@
                 <option value="verbose">verbose</option>
                 <option value="info">info</option>
             </select>
+        </div>
+        <div>
+            <button onclick="myFunction()">Click me</button>
         </div>
         <div id="mytimeline"></div>
         <hr/>
