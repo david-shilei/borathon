@@ -2,6 +2,7 @@ import os, re, time
 import subprocess
 from pprint import pprint, pformat
 from mylogger import logger
+from multiprocessing import Pool
 
 class LogRecord:
     pass
@@ -37,6 +38,9 @@ def getBugzillaRecords(entity):
           bugs.append(pair)
     return bugs
 
+def SearchLogInt(obj):
+    return SearchLog(obj[0], obj[1])
+
 def processLog(dirs, conf, offset=0, limit=1000):
     # entity to logs mapping, return as result of this fuction
     entity_log_mapping = {}
@@ -51,11 +55,18 @@ def processLog(dirs, conf, offset=0, limit=1000):
     getEntityPattern(dirs, conf, entities)
 
     # third step: extract all logs related with the entities'
+    p = Pool(8)
     all_entries = []
+    all_keys = []
     for entityType in entities.keys():
         for entity in entities[entityType]:
-            entries = SearchLog(entity, os.path.dirname(dirs[0]))
-            all_entries.extend(entries)
+            all_keys.append([entity, os.path.dirname(dirs[0])])
+        #for entity in entities[entityType]:
+            #entries = SearchLog(entity, os.path.dirname(dirs[0]))
+            #all_entries.extend(entries)
+    results = p.map(SearchLogInt, all_keys)
+    for result in results:
+        all_entries.extend(result)
 
     sorted(all_entries, key=lambda x: x['epoch'])
     all_entries = all_entries[offset:offset + limit]
@@ -196,13 +207,23 @@ def SearchLog(keyword, path):
                     continue
                 left = max(logLine.find(keyword) - 15, 0)
                 right = max(left + len(keyword) + 15, len(line))
+                className = ''
+                if ' error ' in logLine.lower():
+                    className = 'error'
+                elif ' info ' in logLine.lower():
+                    className = 'info'
+                elif ' verbose ' in logLine.lower():
+                    className = 'verbose'
+                elif ' warning ' in logLine.lower():
+                    className = 'warning'
 
                 record = {
                     'log' : '...%s...' % logLine[left:right],
                     'source' : m.group(1).replace('%s/' % path, ''),
                     'line' : int(m.group(2)),
                     'epoch' : convertTimestampToEpoch(timestamp),
-                    'entity': keyword
+                    'entity': keyword,
+                    'className': className
                 }
                 result.append(record)
     return sorted(result, key=lambda x: x['epoch'])
