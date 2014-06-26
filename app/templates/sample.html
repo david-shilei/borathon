@@ -6,10 +6,12 @@
         <script type="text/javascript" src="../static/js/timeline.js"></script>
         <script type="text/javascript" src="../static/js/borathon_timeline.js"></script>
         <link href="../static/css/timeline.css" rel="stylesheet">
+        <link href="../static/css/borathon.css" rel="stylesheet">
 
         <script type="text/javascript">
             $(document).ready(function () { 
                     //test raw log.
+                    /*
                     $.ajax({
                         url: "raw",
                         data: {linenum: 5, file: "/home/lich/test.log"}
@@ -18,7 +20,32 @@
                             var logLineArrays = parseReturnedRawLogLines(result);
                             onRawLogLinesFetched(logLineArrays, 5);
                         });
+                        */
+                    $.getJSON("../static/data/hostd.log.json", function(data) { 
+                        // Draw our timeline with the created data and options 
+                        //alert("mlgb........"); 
+                        //timeline.draw(data, options); 
+                        fillTimeline(data, 'mytimeline'); 
+                        addTimelineSelectionListener(function(item) { 
+                            alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n"); 
+                            }); 
+                        // xixi, hidden one type 
+                        //$(".verbose").css("visibility", "hidden"); 
+                        $("#myselect").change(function() { 
+                            //alert($(this).children('option:selected').val()); 
+                            $val = $(this).children('option:selected').val(); 
+                            $(".verbose").css("visibility", "hidden"); 
+                            $(".info").css("visibility", "hidden"); 
+                            if($val == 'all') { 
+                            $(".verbose").css("visibility", "visible"); 
+                            $(".info").css("visibility", "visible"); 
+                            } else { 
+                            $("."+$val).css("visibility", "visible");  
+                            } 
+                            }); 
                     });
+                });
+
         </script>
     </head>
     <body>
