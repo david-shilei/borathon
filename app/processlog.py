@@ -73,12 +73,10 @@ def processLog(dirs, conf, offset=0, limit=1000):
     for entry in all_entries:
         summary = entry['content']
         if summary in tmp and abs(entry['start'] - tmp[summary]) <= 60000 * 10:
-            print 'Ignore %s' % summary
             continue
         else:
             tmp[summary] = entry['start']
             filterEntries.append(entry)
-    print filterEntries
     if offset >= len(all_entries):
         offset = len(all_entries) - 1
     if offset + limit >= len(all_entries):
@@ -110,9 +108,11 @@ def processLog(dirs, conf, offset=0, limit=1000):
                 continue
             entities[key][entity] = sorted(entities[key][entity], key=lambda x:
                                            x['start'])
+    if len(entities['vm']) == 0:
+        entities.pop('vm', None)
+    if len(entities['host']) == 0:
+        entities.pop('host', None)
     return entities
-
-
 
 def convertTimestampToEpoch(timestamp):
     # standard time stamp 2014-05-09T22:27:22.670Z
@@ -174,7 +174,6 @@ def getNLines(fileName, lineNum, n):
     start = lineNum + n
     length = 2 * n + 1
     cmd = r"""cat -n %s/%s |head -%d |tail -%d""" % (os.path.dirname(__file__), fileName, start, length)
-    print cmd
     p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     output, err = p.communicate()
     return output
