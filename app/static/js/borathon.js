@@ -106,7 +106,7 @@ function generateListedItem(itemName, logs) {
 	
   	link.click(function(){
 		logs = filterLogs($(this));
-		fillTimeline(logs);
+		// fillTimeline(logs);
   	});
 	
 	var badge = $("<span />", {
@@ -125,6 +125,7 @@ function generateListedItem(itemName, logs) {
 }
 
 function renderEntityList(data) {
+	total_logs = [];
 	for(var entityType in data) {
 		entity_type_logs = [];
 		entities = data[entityType];
@@ -133,6 +134,7 @@ function renderEntityList(data) {
 		for(var entityName in entities) {
 			logs = entities[entityName];
 			entity_type_logs.push(logs);
+			total_logs.push(logs);
 			var new_item = generateListedItem(entityName, logs);
 			entityGroup.find(".entityList").append(new_item);
 		}
@@ -141,47 +143,9 @@ function renderEntityList(data) {
 		entityTypeTitle.text(entityTypeTitle.text() + "(" + entity_type_logs.length + ")");
 		$("#accordion").append(entityGroup);
 	}
-}
 
-// function buildForEntities(entities) {
-// 	$("#entityList").empty();
-//
-// 	var logsToTimeline = [];
-//   	for(var entityName in entities) {
-// 		var logs = entities[entityName];
-// 		logsToTimeline.push(logs);
-// 		var link = $("<a />", {
-// 		    href: "#",
-// 		    "class": "entity-link", // you need to quote "class" since it's a reserved keyword
-// 		    text: entityName,
-// 			title: entityName,
-// 			style: "clear:both;"
-// 		});
-// 		link.data("name", entityName);
-// 		link.data("logs", logs);
-//
-// 	  	link.click(function(){
-// 			logs = filterLogs($(this));
-// 			fillTimeline(logs);
-// 	  	});
-//
-// 		var badge = $("<span />", {
-// 			"class": "badge",
-// 			text: logs.length,
-// 			style: "float:right"
-// 		});
-//
-// 		var newItem = $("<li />", {
-// 		    style: "display: none;"
-// 		});
-// 		link.append(badge);
-// 		newItem.append(link);
-//
-// 		newItem.appendTo($("#entityList")).show('slow');
-//   	}
-//
-// 	// fillTimeline(logsToTimeline);
-// }
+	fillTimeline(total_logs, "#logsTimeline");
+}
 
 function displayLog(log) {
 	var contentContainer = $('#entityContent');
