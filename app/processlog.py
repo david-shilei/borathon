@@ -150,7 +150,9 @@ def extractLogLines(file, entity, entity_log_mapping):
                     entity_log_mapping[entity].append(record)
             lineNumber += 1
 
-def extractEntities(file, conf, entities, pr):
+def extractEntities(file, conf, entities):
+    if not os.path.exists(file):
+        return
     with open(file) as f:
         for line in f:
             for c in conf['details']:
