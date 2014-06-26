@@ -7,7 +7,7 @@ $(document).ready(function(){
 });
 
 $(".timeTravel").click(function(){
-	var isNext = $(this).hasClass('prev');
+	var isNext = !$(this).hasClass('prev');
 	if(isNext) {
 		offset += EACH_LIMIT;
 	} else {
@@ -16,7 +16,6 @@ $(".timeTravel").click(function(){
 			offset = 0;
 		}
 	}
-	
     getAndRenderSupportBundle(sb_url, offset);
 });
 
