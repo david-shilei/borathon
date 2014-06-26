@@ -1,12 +1,4 @@
 
-/**
- * Sample:
- * fillTimeline(data, 'mytimeline');
- * addTimelineSelectionListener(function(item) {
- *    alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
- *  });
- *
- */
 var timeline;
 
 function initTimeline(div_id) {
@@ -49,6 +41,9 @@ function fillTimeline(log_array, div_id) {
         timeline.setData(log_array);
         timeline.redraw();
     }
+    // Draw our timeline with the created data and options
+    //alert("mlgb........");
+    // });
 }
 
 /**

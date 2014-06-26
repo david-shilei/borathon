@@ -3,6 +3,7 @@
         <title>VMWare vSAN Log Visualization</title>
         <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="timeline/timeline.js"></script>
+        <script type="text/javascript" src="js/borathon_timeline.js"></script>
         <link rel="stylesheet" type="text/css" href="timeline/timeline.css">
         <style type="text/css">
             body {
@@ -76,6 +77,7 @@
                 $("#header").load("header.html"); 
                 $("#footer").load("footer.html"); 
 
+                /*
                 // specify options
                 var options = {
                     "width":  "100%",
@@ -100,12 +102,18 @@
                     }
                 }
                 links.events.addListener(timeline, 'select', onselect);
+                */
                 $.getJSON("hostd.log.json", function(data) {
                     // Draw our timeline with the created data and options
                     //alert("mlgb........");
-                    timeline.draw(data, options);
+                    //timeline.draw(data, options);
+                    fillTimeline(data, 'mytimeline');
+                    addTimelineSelectionListener(function(item) {
+                        alert("Log Level: " + item.className + ". " + "\nDetail: " + item.content + "\n");
+                    });
                     // xixi, hidden one type
                     //$(".verbose").css("visibility", "hidden");
+                    /*
                     $("#myselect").change(function() {
                         //alert($(this).children('option:selected').val());
                         $val = $(this).children('option:selected').val();
@@ -118,6 +126,7 @@
                            $("."+$val).css("visibility", "visible"); 
                     }
                     });
+                    */
                 });
 
             });
