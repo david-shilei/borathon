@@ -16,37 +16,6 @@
 //     return value;
 // }
 
-var json_result = {
-	"host": {
-		"host-9:91:76e1b7f8-0-13e9": [
-			{
-				"start": 1231231231123,
-				"line": 234,
-				"file": "hostd.log",
-				"className": "host",
-				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
- 			    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }],
-		"host-9:94:22480d43-0-1ae8": [
-			{
-				"start": 1231231231231,
-				"line": 235,
-				"file": "hostd.log",
-				"className": "host",
-				"content": "Failed to load virtual machine: vim.fault.FileNotFound",
-				"detail": "2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound." }]
-	},
-	"vm": {
-		"vm-esx.0": [
-		{
-			"start": 1231231231123,
-			"line": 234,
-			"file": "hostd.log",
-			"className": "host",
-			"content": "Failed to load virtual machine: vim.fault.FileNotFound",
-		    "detail":"2014-05-09T23:31:24.304Z [321C2B70 info 'Vmsvc.vm:/vmfs/volumes/vsan:52a7980961ea0ddf-e8c7fef416d27ea0/484c6d53-e861-52ac-6e8c-2c44fd7c2d24/io-10.139.130.110-vsanDatastore-rhel6-64-vmwpv-lc-0028.vmx' opID=host-9:91:76e1b7f8-0-13e9 user=vpxuser] Failed to load virtual machine: vim.fault.FileNotFound."
-		}]
-	}
-}
 
 var pr_result = [
 	{
