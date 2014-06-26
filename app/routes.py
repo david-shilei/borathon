@@ -2,7 +2,7 @@ import os, sys, inspect, json
 
 import processlog
 import json
-from flask import Flask, render_template, url_for, request, session, abort, Response
+from flask import Flask, render_template, url_for, request, session, abort, Response, send_from_directory
 from download import downloadFiles, processUrl, extractFiles, downloadSupportBundles
 from pprint import pprint
 from jsonpickle import encode
@@ -67,9 +67,10 @@ def submit():
     return render_template('timeline.html', data = {'url' : url })
 
 @app.route('/file/<path:filepath>')
-def showfile(filename):
+def showfile(filepath):
     path = os.path.join(app.root_path, filepath)
-    return send_from_directory(os.path.dir(path), os.path.basename(path))
+    print path
+    return send_from_directory(os.path.dirname(path), os.path.basename(path))
 
 @app.route('/timeline', methods=['GET', 'POST'])
 def result():

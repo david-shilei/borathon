@@ -141,7 +141,7 @@ function onRawLogLinesFetched(filePath, loglines_array, n) {
 		$("#rawLogs").append(log_line);
     }
 
-	$("#rawLogsFile").href = "/file/" + filePath;
-	$("#rawLogsFile").text = filePath;
+	$("#rawLogsFile").attr('href', "/file/" + filePath);
+	$("#rawLogsFile").text(filePath);
 	$('#rawLogsModal').modal('show');
 }
