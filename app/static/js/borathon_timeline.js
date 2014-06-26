@@ -24,6 +24,8 @@ function fillTimeline(log_array, div_id) {
         //"step": 1,
         "axisOnTop": true,
         "cluster": true,
+        "zoomMax": 86400000,
+        "zoomMin": 60000,
         "style": "box" // optional
     };
 
