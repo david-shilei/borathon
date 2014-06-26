@@ -75,18 +75,18 @@ def showfile(filepath):
 @app.route('/timeline', methods=['GET', 'POST'])
 def result():
     url=request.args.get('url', '')
-    if cache.get(url) is None:
-
-       offset = request.args.get('offset', '0')
-       limit = request.args.get('limit', '999999')
+    offset = request.args.get('offset', '0')
+    limit = request.args.get('limit', '1000')
+    key = url + '-' + offset + '-' + limit
+    if cache.get(key) is None:
        # download and extract support bundles
        local_paths = downloadSupportBundles(url)
        extracted_dirs = extractFiles(local_paths)
 
        mapping = processLog(extracted_dirs, conf['patterns'], int(offset), int(limit))
-       print cache.get(url)
-       cache[url] = encode(mapping)
-    return cache[url]
+       print cache.get(key)
+       cache[key] = encode(mapping)
+    return cache[key]
 
 
 @app.route('/patterns')
