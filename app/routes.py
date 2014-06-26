@@ -27,7 +27,6 @@ def home():
 
 @app.route('/submit', methods=['GET','POST'])
 def submit():
-    logger.debug("hello")
     url=request.args.get('url', '')
     #url = "1249097/*.tgz"
 

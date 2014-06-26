@@ -99,7 +99,7 @@ def downloadSupportBundles(url):
        local_paths = downloadFiles(newdir, urls)
        return local_paths
 
-def processUrl(url):
+def parseWildcardTgzUrl(url):
     pattern = r"(?P<number>\d{7})(?P<subpath>(/.*)*)/\*\.tgz"
     p = re.compile(pattern)
     m = p.match(url)
@@ -109,7 +109,21 @@ def processUrl(url):
         return urls
     return None
 
+
+def processUrl(url):
+    url.replace('\n', ' ')
+    splits = url.split(' ')
+    urls = []
+    for split  in splits:
+        if split != "":
+            if split.startswith('http') and split.endswith('tgz'):
+                urls.append(split)
+            else:
+                urls += parseWildcardTgzUrl(split)
+    return urls
+
 if __name__ == '__main__':
+
     url = "1249097/*.tgz"
     local_paths = downloadSupportBundles(url)
     extractFiles(local_paths)
