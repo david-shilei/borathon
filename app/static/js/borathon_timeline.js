@@ -24,7 +24,7 @@ function fillTimeline(log_array, div_id) {
         //"step": 1,
         "axisOnTop": true,
         "cluster": true,
-        "style": "dot" // optional
+        "style": "box" // optional
     };
 
     // $.each(json_result["entities"], function(idx, entity){
