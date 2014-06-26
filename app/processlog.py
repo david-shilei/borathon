@@ -10,19 +10,21 @@ class LogRecord:
 TIMESTAMP_LENGTH = len("2014-05-09T23:17:00.998Z")
 
 entities = dict()
+pr = dict()
 
-def getEntityPattern(dirs, conf, entities):
+def getEntityPattern(dirs, conf, entities, pr):
     # first step: get logs file who should scan
     for directory in dirs:
         for c in conf:
             log_file = directory + "/var/log/" + c['log_type']
-            extractEntities(log_file, c, entities)
+            extractEntities(log_file, c, entities, pr)
 
 def getBugzillaRecords(entity):
+    print pr.get('host-9')
     bugs = []
-    if not entities:
+    if not pr:
        return []
-    patterns = entities.get(entity)
+    patterns = pr.get(entity)
     if not patterns:
        return []
     for p in patterns:
@@ -50,8 +52,10 @@ def processLog(dirs, conf, offset=0, limit=1000):
     entities = dict()
     entities['host'] = {}
     entities['vm'] = {}
+    global pr
+    pr = dict()
 
-    getEntityPattern(dirs, conf, entities)
+    getEntityPattern(dirs, conf, entities, pr)
 
     # third step: extract all logs related with the entities'
     p = Pool(8)
@@ -146,7 +150,7 @@ def extractLogLines(file, entity, entity_log_mapping):
                     entity_log_mapping[entity].append(record)
             lineNumber += 1
 
-def extractEntities(file, conf, entities):
+def extractEntities(file, conf, entities, pr):
     with open(file) as f:
         for line in f:
             for c in conf['details']:
@@ -163,7 +167,9 @@ def extractEntities(file, conf, entities):
 
                         if entity not in root:
                             root[entity] = []
-                        #root[entity].add(c['name'])
+                        if entity not in pr:
+                           pr[entity] = set()
+                        pr[entity].add(c['name'])
 
 def dumpLogRecords(records):
     for entity in records.keys():
