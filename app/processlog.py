@@ -71,20 +71,20 @@ def processLog(dirs, conf, offset=0, limit=1000):
     for result in results:
         all_entries.extend(result)
 
-    sorted(all_entries, key=lambda x: x['start'])
+    all_entries.sort(lambda x, y: cmp(x['start'], y['start']))
     filterEntries = []
     tmp = {}
     for entry in all_entries:
         summary = entry['content']
-        if summary in tmp and abs(entry['start'] - tmp[summary]) <= 60000 * 10:
+        if summary in tmp and abs(long(entry['start']) - long(tmp[summary])) <= 60000 * 10:
             continue
         else:
             tmp[summary] = entry['start']
             filterEntries.append(entry)
-    if offset >= len(all_entries):
-        offset = len(all_entries) - 1
-    if offset + limit >= len(all_entries):
-        limit = len(all_entries) - offset
+    if offset >= len(filterEntries):
+        offset = len(filterEntries) - 1
+    if offset + limit >= len(filterEntries):
+        limit = len(filterEntries) - offset
     all_entries = filterEntries[offset:offset + limit]
     for entry in all_entries:
         entity = entry['entity']
@@ -110,8 +110,7 @@ def processLog(dirs, conf, offset=0, limit=1000):
             if entities[key][entity] == []:
                 entities[key].pop(entity, None)
                 continue
-            entities[key][entity] = sorted(entities[key][entity], key=lambda x:
-                                           x['start'])
+            entities[key][entity].sort(lambda x, y: cmp(x['start'], y['start']))
     if len(entities['vm']) == 0:
         entities.pop('vm', None)
     if len(entities['host']) == 0:
@@ -128,7 +127,7 @@ def convertTimestampToEpoch(timestamp):
         intms = int(ms)
     except:
         pass
-    epoch = int(time.mktime(time.strptime(datetime, pattern))) * 1000 + intms
+    epoch = long(time.mktime(time.strptime(datetime, pattern))) * 1000 + intms
     return epoch
 
 def extractLogLines(file, entity, entity_log_mapping):

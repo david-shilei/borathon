@@ -1,6 +1,6 @@
 var selected_entities = {};
 var offset = 0;
-EACH_LIMIT = 2500;
+EACH_LIMIT = 1000;
 
 $(document).ready(function(){	
 	if(typeof sb_url != 'undefined') {
