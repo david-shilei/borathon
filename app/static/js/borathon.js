@@ -3,11 +3,25 @@ var offset = 0;
 EACH_LIMIT = 2500;
 
 $(document).ready(function(){	
-	getAndRenderSupportBundle(sb_url, offset);
+	if(typeof sb_url != 'undefined') {
+		getAndRenderSupportBundle(sb_url, offset);
+	}
+});
+
+$(document).ready(function(){
+	var parts = document.URL.split("/");
+	relative_url = parts[parts.length - 1];
+
+	$(".navbar.navbar-fixed-top ul.nav li").removeClass("active");
+	if(relative_url == "patterns") {
+		$(".navbar .my-nav-patterns").addClass("active");
+	} else if (relative_url == "") {
+		$(".navbar .my-nav-home").addClass("active");
+	}
+// 	$(this).parent("li").addClass("active");
 });
 
 $(".timeTravel").click(function(){
-    $("#loading").show();
 	var isNext = !$(this).hasClass('prev');
 	if(isNext) {
 		offset += EACH_LIMIT;
@@ -26,6 +40,7 @@ $(".timeTravel").click(function(){
 
 
 function getAndRenderSupportBundle(url, offset) {
+	$("#loading").show();
 	$.getJSON( "timeline", {
 		url: url,
 		offset: offset,
@@ -116,6 +131,7 @@ function renderEntityList(data) {
 }
 
 function displayPRs(entityLink) {
+	$("#prsContainer").empty();
 	var selected = entityLink.hasClass('selected');
 	if(selected) {
 		var entityName = entityLink.data("name");
@@ -127,7 +143,8 @@ function displayPRs(entityLink) {
 				var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
 				var pr_link = $("<a />", {
 				    href: url,
-				    text: "PR#" + pr.id + ": " + pr.summary
+					target: "_blank",
+				    text: "PR#" + pr.id + ": " + pr.value
 				});
 
 				$("#prsContainer").append($('<p />').append(pr_link));

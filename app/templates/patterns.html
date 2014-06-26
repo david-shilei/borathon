@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block body %}
     <div class="container">
-      <h1>Patterns</h1>
+      <h4>Patterns</h4>
+	  <hr/>
 		{% for p in patterns %}
+			<div class="well" style="margin-bottom: 20px;">
 				  {% for detail in  p['details'] %}
-							 Log file: {{ p.log_type }} <br>
-							 Pattern: {{ detail.name}} <br>
-							 Regex: {{ detail.full }} <br>
+							 <p><b>Log file:</b> {{ p.log_type }} </p>
+							 <p><b>Sympton:</b> {{ detail.name}} </p>
+							 <p><b>Regex:</b> {{ detail.full }} </p>
 					{% endfor %}
+			</div>
 		{% endfor %}
     </div> <!-- /container -->
 {% endblock %}
