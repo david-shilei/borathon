@@ -1,5 +1,6 @@
 import os, sys, inspect
 
+import processlog
 from flask import Flask, render_template, url_for, request, jsonify, session, abort
 from download import downloadFiles, processUrl, extractFiles, downloadSupportBundles
 from pprint import pprint
@@ -61,6 +62,10 @@ def raw():
     default_n = 5
     n = int(request.args.get('n')) if request.args.get('n') is not None else default_n
     return getNLines(file_name, line_num, n)
+
+@app.route('/bugzilla/<entity>')
+def get_bugzilla_records(entity):
+   return jsonify(processlog.getBugzillaRecords(entity))
 
 def _check_required_fields(request, *fields):
     if request.args is None:

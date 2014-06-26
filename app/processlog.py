@@ -8,6 +8,8 @@ class LogRecord:
 
 TIMESTAMP_LENGTH = len("2014-05-09T23:17:00.998Z")
 
+entities = dict()
+
 def getEntityPattern(dirs, conf, entities):
     # first step: get logs file who should scan
     for directory in dirs:
@@ -15,12 +17,27 @@ def getEntityPattern(dirs, conf, entities):
             log_file = directory + "/var/log/" + c['log_type']
             extractEntities(log_file, c, entities)
 
+def getBugzillaRecords(entity):
+    bugs = {}
+    patterns = entities.get(entity)
+    for p in patterns:
+       #-w bug_id,short_desc | grep '|.*\d.*'
+       cmd = r"""python bugzilla.py -q txie '%s' -w bug_id,short_desc|grep '|.*\d.*'""" % (p)
+       p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+       output, err = p.communicate()
+       lines = output.strip().split('\n')
+       for l in lines:
+          bug_id, summary = l.strip('|').split('|')
+          bugs[bug_id.strip()] = summary.strip()
+    return bugs
+
 def processLog(dirs, conf):
 
     # entity to logs mapping, return as result of this fuction
     entity_log_mapping = {}
 
     # all entities
+    global entities
     entities = dict()
 
     getEntityPattern(dirs, conf, entities)
