@@ -163,10 +163,15 @@ def SearchLog(keyword, path):
                 timestamp =  logLine[0 : TIMESTAMP_LENGTH]
                 if not datetimeRegex.match(timestamp):
                     continue
+                if 'verbose' in logLine:
+                    continue
+                left = max(logLine.find(keyword) - 15, 0)
+                right = max(left + len(keyword) + 15, len(line))
+
                 record = {
-                    'log' : logLine,
-                    'source' : m.group(1),
-                    'line' : m.group(2),
+                    'log' : '...%s...' % logLine[left:right],
+                    'source' : m.group(1).replace('%s/' % path, ''),
+                    'line' : int(m.group(2)),
                     'epoch' : convertTimestampToEpoch(timestamp)
                 }
                 result.append(record)
