@@ -74,5 +74,4 @@ def loadPatterns():
 
 if __name__ == '__main__':
     loadPatterns()
-    logger.debug(conf)
     app.run(debug=True)
