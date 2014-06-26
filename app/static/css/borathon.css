@@ -5,6 +5,11 @@
 	background: url('../img/url.gif') no-repeat center center;
 }
 
+.modal {
+	width: 720px;
+	left: 45%;
+}
+
 .navbar-vmware .navbar-inner {
     background-color: #1b1b1b;
     background-image: linear-gradient(to bottom, #222222, #111111);
@@ -24,17 +29,13 @@
 /* Start css for timeline log level */
 /* custom styles for individual items, load this after timeline.css */
 
-span.legend {
-	margin-left: 30px;
-}
-
-div.info, span.legend.info {
+div.info {
     background-color: greenyellow;
     border-color: green;
 }
 
 /* create a custom sized dot at the bottom of the red item */
-div.error, span.legend.error {
+div.error {
     background-color: red;
     border-color: darkred;
     color: white;
@@ -55,7 +56,7 @@ div.timeline-event-box.error {
     font-weight: bold;
 }
 
-div.warning, span.legend.warning {
+div.warning {
     background-color: gold;
     border-color: orange;
 }
@@ -65,7 +66,7 @@ div.timeline-event-selected.warning {
     border-color: orangered;
 }
 
-div.fatal, span.legend.fatal {
+div.fatal {
     background-color: magenta;
     border-color: purple;
     color: white;

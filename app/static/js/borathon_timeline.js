@@ -142,6 +142,8 @@ function onRawLogLinesFetched(filePath, loglines_array, n) {
     }
 
 	$("#rawLogsFile").attr('href', "/file/" + filePath);
-	$("#rawLogsFile").text(filePath);
+	$("#rawLogsFile").attr('target', "_blank");
+	var fileParts = filePath.split("/");
+	$("#rawLogsFile").text(fileParts.slice(2, fileParts.length).join("/") );
 	$('#rawLogsModal').modal('show');
 }

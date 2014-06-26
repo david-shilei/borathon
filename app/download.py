@@ -136,6 +136,7 @@ def processUrl(url):
                 split = split + '/*.tgz'
                 urls += parseWildcardTgzUrl(split)
             else:
+                print split
                 urls += parseWildcardTgzUrl(split)
     return sorted(urls)
 
