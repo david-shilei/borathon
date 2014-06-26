@@ -22,6 +22,20 @@ app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 def home():
   return render_template('home.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/pattern')
+def pattern():
+    path = os.path.join(app.root_path, 'patterns.conf')
+    #print path
+    return send_from_directory(os.path.dirname(path), os.path.basename(path))
+
 @app.route('/timeline1')
 def timeline():
 #    mydata = {
@@ -69,7 +83,7 @@ def submit():
 @app.route('/file/<path:filepath>')
 def showfile(filepath):
     path = os.path.join(app.root_path, filepath)
-    print path
+    #print path
     return send_from_directory(os.path.dirname(path), os.path.basename(path))
 
 @app.route('/timeline', methods=['GET', 'POST'])
