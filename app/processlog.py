@@ -8,57 +8,30 @@ class LogRecord:
 
 TIMESTAMP_LENGTH = len("2014-05-09T23:17:00.998Z")
 
+def getEntityPattern(dirs, conf, entities):
+    # first step: get logs file who should scan
+    for directory in dirs:
+        for c in conf:
+            log_file = directory + "/var/log/" + c['log_type']
+            extractEntities(log_file, c, entities)
 
-def findEntity(file, _entity_patterns, log_patterns):
-   thread_entities = {}
-   entities = set();
-   with open(file) as f:
-      for line in f:
-         for pattern in thread_entity_patterns:
-            p = re.match(pattern.strip(), line)
-            if p:
-               thread_entities[p.group('thread')] = p.group('opid')
-         for pattern in patterns:
-            p = re.match(pattern.strip(), line.strip())
-            if p:
-               entities.add(thread_entities[p.group('thread')])
-   logger.debbug(pformat(entities))
-   return entities
-
-def processLog(dirs, log_types, entity_patterns, log_patterns):
+def processLog(dirs, conf):
 
     # entity to logs mapping, return as result of this fuction
     entity_log_mapping = {}
+
     # all entities
-    entities = set()
+    entities = dict()
 
-    # first step: get logs file who should scan
-    _log_files = []
-    _log_types= []
-    for directory in dirs:
-        for supported in log_types:
-            log_file = directory + "/var/log/" + supported
-            _log_files.append(log_file)
-            _log_types.append(supported)
-    logger.debug(_log_files)
-    logger.debug(_log_types)
-
-    # second step: get entities
-    for log_file, log_type in zip(_log_files, _log_types):
-        _log_patterns = log_patterns[log_type]
-        extractEntities(log_file, _log_patterns, entities)
-    logger.debug(entities)
+    getEntityPattern(dirs, conf, entities)
 
     # third step: extract all logs related with the entities'
-    for entity in entities:
+    for entity in entities.keys():
         entries = SearchLog(entity, os.path.dirname(dirs[0]))
         if entity in entity_log_mapping:
             entity_log_mapping.extends(entries)
         else:
             entity_log_mapping[entity] = entries
-    #for log_file in _log_files:
-    #    for entity in entities:
-    #        extractLogLines(log_file, entity, entity_log_mapping)
 
     result = []
     for entity in entity_log_mapping:
@@ -92,10 +65,10 @@ def extractLogLines(file, entity, entity_log_mapping):
             if line.find(entity) != -1 and line.startswith('2014'):
                 timestamp =  line[0 : TIMESTAMP_LENGTH]
                 record = {
-                    'log' : line,
+                    'content' : line,
                     'source' : file,
                     'line' : lineNumber,
-                    'epoch' : convertTimestampToEpoch(timestamp)
+                    'start' : convertTimestampToEpoch(timestamp)
                 }
                 if entity_log_mapping.get(entity) is None:
                     entity_log_mapping[entity] = [record]
@@ -103,16 +76,18 @@ def extractLogLines(file, entity, entity_log_mapping):
                     entity_log_mapping[entity].append(record)
             lineNumber += 1
 
-def extractEntities(file, patterns, entities):
+def extractEntities(file, conf, entities):
     with open(file) as f:
         for line in f:
-            for pattern in patterns:
-               p = re.compile(pattern)
+            for c in conf['details']:
+               p = re.compile(c['full'])
                m = p.match(line.strip())
                if m:
-                   # we allow multiple entityes in one line
+                   # we allow multiple entities in one line
                    for entity in m.groups():
-                       entities.add(entity)
+                      if entity not in entities:
+                         entities[entity] = set()
+                      entities[entity].add(c['name'])
 
 def dumpLogRecords(records):
     for entity in records.keys():
