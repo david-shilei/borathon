@@ -78,28 +78,21 @@
 	  	  </div>
         </div><!--/span-->
         <div class="span9">
-			<h3>Timeline:</h3>
+			<div class="clearfix">
+				<h3 style="float:left">Timeline:</h3>
+			
+				<span style="float:right; margin-top:20px;">
+					<span class="legend label label-info">Info</span>
+					<span class="legend label label-warning">Warning</span>
+					<span class="legend label label-important">Error</span>
+					<span class="legend fatal">Fatal</span>
+				</span>	
+			</div>
+			
             <div class="hero-unit">
   				<div id="logsTimeline"></div>
             </div>
 			
-			    <div id="rawLogsModal" class="modal hide fade">
-			    	<div class="modal-header">
-			    		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			    		<h3>Raw Logs</h3>
-			    	</div>
-			    	<div class="modal-body">
-						<p><a id="rawLogsFile" /></p>
-						<pre class="prettyprint linenums">
-							<ul class="linenums" id="rawLogs" style="list-style-type: none;">
-							</ul>
-						</pre>
-			   	 	</div>
-			    	<div class="modal-footer">
-			    		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			    	</div>
-			    </div>
-
 				<h3>Related PRs:</h3>
 					
 				<div class="well" id="prsContainer">
@@ -107,9 +100,22 @@
 				</div>
 
 			
-            <div class="row-fluid" id="entityContent">
-           
-            </div><!--/row-->
+		    <div id="rawLogsModal" class="modal hide fade">
+		    	<div class="modal-header">
+		    		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		    		<h3>Raw Logs</h3>
+		    	</div>
+		    	<div class="modal-body">
+					<p><a id="rawLogsFile" /></p>
+					<pre class="prettyprint linenums">
+						<ul class="linenums" id="rawLogs" style="list-style-type: none;">
+						</ul>
+					</pre>
+		   	 	</div>
+		    	<div class="modal-footer">
+		    		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		    	</div>
+		    </div>
           
         </div><!--/span-->
       </div><!--/row-->
