@@ -19,6 +19,17 @@ $(document).ready(function(){
 		$(".navbar .my-nav-home").addClass("active");
 	}
 // 	$(this).parent("li").addClass("active");
+ 	$("#entitySelectToggle").click(function() {
+        var value = $(this).text();
+        //alert(value);
+        if(value == 'Select All') {
+            $(this).text("Unselect All");
+            toggleSelectAllEntities(true);
+        } else {
+            $(this).text("Select All");
+            toggleSelectAllEntities(false);
+        }
+    });
 });
 
 $(".timeTravel").click(function(){
@@ -111,6 +122,7 @@ function renderEntityList(data) {
 		entity_logs_count = 0;
 		entities = data[entityType];
 		entityGroup = generateEntitiesGroup(entityType);
+        
 		
 		for(var entityName in entities) {
 			logs = entities[entityName];
@@ -159,4 +171,23 @@ function filterLogs(entityLink) {
 	}
 
 	return result;
+}
+
+function toggleSelectAllEntities(isToSelect) {
+   $(".entity-link").each(function() {
+	  var entityName = $(this).data("name");
+	  var logs = $(this).data("logs");
+      if(isToSelect) {
+        $(this).addClass('selected');
+		selected_entities[entityName] = logs;
+      } else {
+        $(this).removeClass('selected');
+		delete selected_entities[entityName];
+      }
+   });
+   var result = [];
+   for(var e in selected_entities) {
+       result = result.concat(selected_entities[e]);
+   }
+   fillTimeline(result, "logsTimeline");
 }
