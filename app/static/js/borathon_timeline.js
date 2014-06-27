@@ -106,6 +106,28 @@ function parseReturnedRawLogLines(result) {
     return returnedArray;
 }
 
+function displayPRs(entityName) {
+	$("#prsContainer").empty();
+
+	alert(entityName);
+    $.ajax({
+        url: "bugzilla/" + entityName,
+		data: {bugnum: 5}
+    }).done(function(result){
+		for(i = 0; i < result.length; i++) {
+			pr = result[i];
+			var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
+			var pr_link = $("<a />", {
+			    href: url,
+				target: "_blank",
+			    text: "PR#" + pr.id + ": " + pr.value
+			});
+
+			$("#prsContainer").append($('<p />').append(pr_link));
+		}
+    });
+}
+
 function onLogSelected(item) {
   //1. Get raw log information
   var filePath = item.source;
@@ -119,8 +141,9 @@ function onLogSelected(item) {
     onRawLogLinesFetched(filePath, logLineArrays, line);
  });
  
-  
   //2. Get bugzilla pr
+  var entityName = item.entity;
+  displayPRs(entityName);
 }
 
 // [{"id": 11, "summary": "XX"}, {"id": 22, "summary": "XX"}]

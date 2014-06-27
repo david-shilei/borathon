@@ -36,6 +36,11 @@
     border-color: #252525;
 }
 
+.entity-link {
+	margin: 7px 0;
+	border-radius: 5px;
+}
+
 .entity-link.selected, .entity-link.selected:focus, .entity-link.selected:hover {
 	background-color: #cccccc;
 	color: #111111;

@@ -57,7 +57,7 @@ function generateEntitiesGroup(itemName) {
 	    "class": "panel panel-default"
 	});
 	var panel_title = $("<a />", {
-	    href: "#collapseOne",
+	    href: "#collapse_" + itemName,
 		"class": "entity-type-title",
 		"data-toggle": "collapse",
 		"data-parent": "#accordion",
@@ -68,8 +68,8 @@ function generateEntitiesGroup(itemName) {
 	});
 
 	panel.append($('<div class="panel-heading" />').append($('<h4 class="panel-title" />').append(panel_title)));
-	// panel.append(panel_collapse);
-	panel.append($('<div id="collapseOne" class="panel-collapse collapse in" ><div class="panel-body"><div class="sidebar-nav"><ul class="nav nav-list entityList"></ul></div></div></div>'));
+	// panel.append(panel_collapse); 
+	panel.append($('<div id="collapse_' + itemName +'" class="panel-collapse collapse in" ><div class="panel-body"><div class="sidebar-nav"><ul class="nav nav-list entityList"></ul></div></div></div>'));
 	return panel;
 }
 
@@ -87,7 +87,6 @@ function generateListedItem(itemName, logs) {
   	link.click(function(){
 		logs = filterLogs($(this));
 		fillTimeline(logs, "logsTimeline");
-		displayPRs($(this));
   	});
 	
 	var badge = $("<span />", {
@@ -129,29 +128,6 @@ function renderEntityList(data) {
 	}
 
 	fillTimeline(total_logs, "logsTimeline");
-}
-
-function displayPRs(entityLink) {
-	$("#prsContainer").empty();
-	var selected = entityLink.hasClass('selected');
-	if(selected) {
-		var entityName = entityLink.data("name");
-	    $.ajax({
-	        url: "bugzilla/" + entityName
-	    }).done(function(result){
-			for(i = 0; i < result.length; i++) {
-				pr = result[i];
-				var url = "https://bugzilla.eng.vmware.com/show_bug.cgi?id=" + pr.id;
-				var pr_link = $("<a />", {
-				    href: url,
-					target: "_blank",
-				    text: "PR#" + pr.id + ": " + pr.value
-				});
-
-				$("#prsContainer").append($('<p />').append(pr_link));
-			}
-	    });
-	}
 }
 
 function displayLog(log) {
