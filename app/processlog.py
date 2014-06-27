@@ -20,7 +20,6 @@ def getEntityPattern(dirs, conf, entities, pr):
             extractEntities(log_file, c, entities, pr)
 
 def getBugzillaRecords(entity):
-    print pr.get('host-9')
     bugs = []
     if not pr:
        return []

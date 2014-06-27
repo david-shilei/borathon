@@ -92,7 +92,6 @@ def result():
        extracted_dirs = extractFiles(local_paths)
 
        mapping = processLog(extracted_dirs, conf['patterns'], int(offset), int(limit))
-       print cache.get(key)
        cache[key] = encode(mapping)
     return cache[key]
 
