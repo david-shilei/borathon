@@ -109,7 +109,6 @@ function parseReturnedRawLogLines(result) {
 function displayPRs(entityName) {
 	$("#prsContainer").empty();
 
-	alert(entityName);
     $.ajax({
         url: "bugzilla/" + entityName,
 		data: {bugnum: 5}
