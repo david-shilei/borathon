@@ -118,7 +118,10 @@ def raw():
 
 @app.route('/bugzilla/<entity>')
 def get_bugzilla_records(entity):
+   num = request.args.get('bugnum')
    rv = processlog.getBugzillaRecords(entity)
+   if num is not None:
+      rv = rv[0:int(num)]
    return Response(json.dumps(rv),  mimetype='application/json')
 
 def _check_required_fields(request, *fields):
