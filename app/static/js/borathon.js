@@ -115,6 +115,7 @@ function renderEntityList(data) {
 		
 		for(var entityName in entities) {
 			logs = entities[entityName];
+			selected_entities[entityName] = logs;
 			entity_logs_count += logs.length
 			total_logs = total_logs.concat(logs);
 			// total_logs += logs;
