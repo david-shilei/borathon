@@ -106,7 +106,7 @@ function generateListedItem(itemName, logs) {
 
 function renderEntityList(data) {
 	$("#accordion").empty();
-	total_logs = [];
+	var total_logs = [];
 	for(var entityType in data) {
 		entity_logs_count = 0;
 		entities = data[entityType];
