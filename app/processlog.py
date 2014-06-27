@@ -164,6 +164,9 @@ def extractEntities(file, conf, entities, pr):
                         elif entity.startswith('host-'):
                             root = entities['host']
 
+                        if root == None:
+                            continue
+
                         if entity not in root:
                             root[entity] = []
                         if entity not in pr:
