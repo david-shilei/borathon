@@ -95,7 +95,6 @@ def processLog(dirs, conf, offset=0, limit=1000):
             root = entities['host']
         if entity not in root or isinstance(root[entity], set):
             root[entity] = []
-        entry.pop('entity', None)
         root[entity].append(entry)
 
     #result = []
